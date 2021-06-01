@@ -1,13 +1,13 @@
 
 ---
 
-<span style="text-align:center;">
+<div style="text-align:center;">
 
 ### Anupam Kumar
 
 #### BITS Pilani, Goa Campus
 
-</span>
+</div>
 
 ---
 
