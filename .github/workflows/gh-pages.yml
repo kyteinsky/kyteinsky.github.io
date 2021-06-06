@@ -19,7 +19,6 @@ jobs:
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
-          # extended: true
 
       - name: Build
         run: hugo --minify
@@ -29,5 +28,5 @@ jobs:
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./docs
 
