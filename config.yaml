@@ -49,6 +49,7 @@ params:
     comments:
         enabled: true
         provider: disqus
+        disqusShortname: https-kyteinsky-github-io
 
         utterances:
             repo:
@@ -109,6 +110,10 @@ params:
 ### Custom menu
 ### See https://docs.stack.jimmycai.com/configuration/custom-menu
 ### To remove about, archive and search page menu item, remove `menu` field from their FrontMatter
+
+custom_css: ['css/asciinema.css']
+custom_js: ['js/asciinema.js']
+    
 menu:
     main:
         - identifier: home
