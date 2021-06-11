@@ -10,7 +10,7 @@ tags = [
     "push",
 ]
 categories = [
-    "daily-updates",
+    "daily-progress",
 ]
 series = ["Git"]
 aliases = ["git-basics"]
