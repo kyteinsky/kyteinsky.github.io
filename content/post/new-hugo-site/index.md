@@ -31,4 +31,4 @@ asciinema = true
 
 ### Here is the asciinema terminal cast:
 
-{{< asciinema key="hugo-setup" rows=40 preload="1" >}}
+{{< asciinema key="new-hugo-site/hugo-setup.cast" rows=40 preload="1" >}}
