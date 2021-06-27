@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>kyte codes</title><link>https://kyteinsky.github.io/</link><description>Recent content on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 27 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Installing Terraform and Creating an EC2 Instance</title><link>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</link><pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</guid><description>&lt;img src="https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/terraform-logo-extended.jpg" alt="Featured image of post Installing Terraform and Creating an EC2 Instance" />&lt;p> &lt;/p>
+&lt;h2 id="ensure-the-prerequisites">Ensure the prerequisites&lt;/h2>
+&lt;ul>
+&lt;li>An AWS Account&lt;/li>
+&lt;li>AWS cli installed, instructions for the same can be found &lt;a class="link" href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/li>
+&lt;li>Have generated credentials (access key and secret), can be created from &lt;a class="link" href="https://console.aws.amazon.com/iam/home?#/security_credentials" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;h2 id="setting-up-aws-cli">Setting up AWS CLI&lt;/h2>
+&lt;p>Type &lt;code>aws configure&lt;/code> on the terminal and enter the Access Key ID and Secret Access Key, other fields can be blank.&lt;/p>
+&lt;h2 id="creating-a-config-file-for-terraform-to-understand">Creating a config file for terraform to understand&lt;/h2>
+&lt;ul>
+&lt;li>Create a directory and switch to it&lt;/li>
+&lt;li>Create a file named main.tf and populate it with the following sample configuration,
+where
+&lt;ul>
+&lt;li>&lt;code>app_server&lt;/code> is the name of the instance&lt;/li>
+&lt;li>&lt;code>us-west-2&lt;/code> is the region where the instance will be deployed&lt;/li>
+&lt;li>&lt;code>ami-830c94e3&lt;/code> is the unique identifier for the instance&lt;/li>
+&lt;li>&lt;code>t2.micro&lt;/code> is the instance type&lt;/li>
+&lt;li>&lt;code>ExampleAppServerInstance&lt;/code> is the tag name for grouping of instances&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-tf" data-lang="tf">&lt;span class="nx">terraform&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="nx">required_providers&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="na">aws&lt;/span> = &lt;span class="p">{&lt;/span>
+&lt;span class="na">source&lt;/span> = &lt;span class="s2">&amp;#34;hashicorp/aws&amp;#34;&lt;/span>
+&lt;span class="na">version&lt;/span> = &lt;span class="s2">&amp;#34;~&amp;gt; 3.27&amp;#34;&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="na">required_version&lt;/span> = &lt;span class="s2">&amp;#34;&amp;gt;= 0.14.9&amp;#34;&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="kr">
+&lt;/span>&lt;span class="kr">provider&lt;/span> &lt;span class="s2">&amp;#34;aws&amp;#34;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="na">profile&lt;/span> = &lt;span class="s2">&amp;#34;default&amp;#34;&lt;/span>
+&lt;span class="na">region&lt;/span> = &lt;span class="s2">&amp;#34;us-west-2&amp;#34;&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="kr">
+&lt;/span>&lt;span class="kr">resource&lt;/span> &lt;span class="s2">&amp;#34;aws_instance&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;app_server&amp;#34;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="na">ami&lt;/span> = &lt;span class="s2">&amp;#34;ami-830c94e3&amp;#34;&lt;/span>
+&lt;span class="na">instance_type&lt;/span> = &lt;span class="s2">&amp;#34;t2.micro&amp;#34;&lt;/span>
+&lt;span class="na">tags&lt;/span> = &lt;span class="p">{&lt;/span>
+&lt;span class="na">Name&lt;/span> = &lt;span class="s2">&amp;#34;ExampleAppServerInstance&amp;#34;&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="installation-of-and-working-with-terraform-cli">Installation of and Working with Terraform CLI:&lt;/h2>
+&lt;ul>
+&lt;li>Terraform can be installed following &lt;a class="link" href="https://learn.hashicorp.com/tutorials/terraform/install-cli" target="_blank" rel="noopener"
+>this guide&lt;/a>&lt;/li>
+&lt;li>Configuration of terraform CLI can be done using command &lt;code>terraform init&lt;/code>&lt;/li>
+&lt;li>The configuration file can be formatted using &lt;code>terraform fmt&lt;/code> command&lt;/li>
+&lt;li>And the file can be validated using &lt;code>terraform validate&lt;/code> command&lt;/li>
+&lt;li>Finally all the changes can be viewed using &lt;code>terraform plan&lt;/code> command and perfomed using &lt;code>terraform apply&lt;/code> command&lt;/li>
+&lt;/ul>
+&lt;h2 id="here-is-a-terminal-cast-performing-the-above-actions">Here is a terminal cast performing the above actions&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/terraform/terraform-1.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Hosting Docker in Cloud (Azure)</title><link>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</link><pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</guid><description>&lt;img src="https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/rafael-garcin-sqZ4GeyYGx8-unsplash.jpg" alt="Featured image of post Hosting Docker in Cloud (Azure)" />&lt;p> &lt;/p>
+&lt;h2 id="azure-part-of-story">Azure part of story&lt;/h2>
+&lt;ul>
+&lt;li>First create one Azure account, I am using a student account&lt;/li>
+&lt;li>Create a basic instance (Ubuntu image works for most cases) with 1 vCPU and 1 GiB RAM, or according to your needs&lt;/li>
+&lt;li>Download the private key and SSH into the instance&lt;/li>
+&lt;li>Update the packages&lt;/li>
+&lt;li>Install docker (following &lt;a class="link" href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener"
+>this&lt;/a> guide)&lt;/li>
+&lt;/ul>
+&lt;p>Let&amp;rsquo;s move on to the local machine setup&lt;/p>
+&lt;p> &lt;/p>
+&lt;h2 id="local-machine-setup">Local machine setup&lt;/h2>
+&lt;h3 id="ssh-keys-setup">SSH Keys Setup&lt;/h3>
+&lt;ul>
+&lt;li>We need to install docker here as well&lt;/li>
+&lt;li>Add ssh key (downloaded from Azure portal) to OpenSSH Auth agent&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="nb">eval&lt;/span> &lt;span class="s1">&amp;#39;ssh-agent&amp;#39;&lt;/span>
+ssh-add &amp;lt;path-to-pem-file&amp;gt;/&amp;lt;file-name&amp;gt;.pem
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;em>(or)&lt;/em> Add &lt;code>AddKeysToAgent yes&lt;/code> to ~/.ssh/config file to automatically do that for you&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;AddKeysToAgent yes&amp;#34;&lt;/span> &amp;gt;&amp;gt; ~/.ssh/config
+&lt;/code>&lt;/pre>&lt;/div>&lt;p> &lt;/p>
+&lt;h3 id="docker-context-setup">Docker Context Setup&lt;/h3>
+&lt;ul>
+&lt;li>Create a new docker context to talk to the docker in Azure instance with command&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-bash" data-lang="bash">docker context create azure-box --docker &lt;span class="s2">&amp;#34;host=ssh://azureuser@&amp;lt;public-ip-of-instance&amp;gt;&amp;#34;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>See all available contexts using &lt;code>docker context ls&lt;/code>&lt;/li>
+&lt;li>Switching to Azure docker is done using command &lt;code>docker context use azure-box&lt;/code> and back to the local docker using &lt;code>docker context use default&lt;/code>&lt;/li>
+&lt;li>Now when we issue commands to docker as usual &lt;code>docker ps&lt;/code>, it is directly communicating to the docker running in the Azure instance&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Note: &amp;lsquo;azure-box&amp;rsquo; is just a name, can be replaced with anything of your choice&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="-now-you-have-docker-running-in-the-cloud-accessible-from-the-terminal">🎉 Now you have docker running in the cloud, accessible from the terminal&lt;/h2>
+&lt;h3 id="finally-just-for-testing-we-can-spin-up-a-ubuntu-container-and-bash-into-it">Finally just for testing, we can spin up a Ubuntu container and bash into it:&lt;/h3>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/docker-cloud/docker-cloud.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Git Add, Git Commit and Git Push</title><link>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</link><pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</guid><description>&lt;img src="https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/roman-synkevych-UT8LMo-wlyk-unsplash.jpg" alt="Featured image of post Git Add, Git Commit and Git Push" />&lt;h2 id="how-to-add-and-commit-changes-in-the-and-then-push-the-changes-to-a-remote-repository-here-github">How to add and commit changes in the and then push the changes to a remote repository (here GitHub)&lt;/h2>
+&lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
+&lt;ul>
+&lt;li>Change some files or create some&lt;/li>
+&lt;li>Issue&lt;code>git add &amp;lt;name of files&amp;gt;&lt;/code>command to add files to be committed&lt;/li>
+&lt;li>Then commit them using &lt;code>git commit -am &amp;lt;commit message&amp;gt;&lt;/code>, here a is for all files, m is for message, and then you place your message for the changes&lt;/li>
+&lt;li>(optional) Finally, push the changes to a remote repository&lt;/li>
+&lt;/ul>
+&lt;h2 id="lets-see-this-in-action">Let&amp;rsquo;s see this in action&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/git-basics/git-acp.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Embedding Asciinema in Hugo Websites</title><link>https://kyteinsky.github.io/p/embedding-asciinema-in-hugo-websites/</link><pubDate>Thu, 10 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/embedding-asciinema-in-hugo-websites/</guid><description>&lt;p> &lt;/p>
+&lt;h1 id="following-a-general-approach-for-any-theme-steps-to-be-performed-following-this-articlehttpsjencisogithubioblogembedding-asciinema-cast-in-your-hugo-site">Following a general approach for any theme, steps to be performed (following &lt;a class="link" href="https://jenciso.github.io/blog/embedding-asciinema-cast-in-your-hugo-site/" target="_blank" rel="noopener"
+>this article&lt;/a>):&lt;/h1>
+&lt;p>Specific for the theme Stack: &lt;a class="link" href="#for-the-stack-theme-the-kind-developer-of-the-theme-zhixuan666httpsgithubcomzhixuan666-mentioned-a-more-efficient-way-to-do-it" >Click Here&lt;/a>&lt;/p>
+&lt;ul>
+&lt;li>Get code for asciinema player&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">wget https://github.com/asciinema/asciinema-player/releases/download/v2.6.1/asciinema-player.css
+wget https://github.com/asciinema/asciinema-player/releases/download/v2.6.1/asciinema-player.js
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Place them in static/css and static/js, where static is folder in the root dir of the website&lt;/li>
+&lt;li>Copy the &lt;code>layouts/partials/_shared/head.html&lt;/code> or &lt;code>layouts/partials/head/head.html&lt;/code> from &lt;code>themes/&amp;lt;theme-name&amp;gt;&lt;/code> directory to your website&amp;rsquo;s root directory with the same folder structure&lt;/li>
+&lt;li>Do the same with &lt;code>layouts/_default/baseof.html&lt;/code>&lt;/li>
+&lt;li>Append this code block for css in &lt;code>layouts/partials/{head or _shared}/head.html&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">{{ if .Params.asciinema }}
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span> &lt;span class="na">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;text/css&amp;#34;&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Site.BaseURL }}css/asciinema-player.css&amp;#34;&lt;/span> &lt;span class="p">/&amp;gt;&lt;/span>
+{{ end }}
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>And this for js in &lt;code>layouts/_default/baseof.html&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">{{ if .Params.asciinema }}
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">script&lt;/span> &lt;span class="na">defer&lt;/span> &lt;span class="na">src&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Site.BaseURL }}js/asciinema-player.js&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&amp;lt;/&lt;/span>&lt;span class="nt">script&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+{{ end }}
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Now let&amp;rsquo;s make a shortcode for asciinema here: &lt;code>layouts/shortcodes/asciinema.html&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>One can change the default rows and columns attributes inside &lt;code>&amp;lt;asciinema-player&amp;gt;&lt;/code> tag&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">asciinema-player&lt;/span>
+&lt;span class="na">src&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;/casts/{{ with .Get &amp;#34;&lt;/span>&lt;span class="na">key&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;span class="na">cols&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">cols&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">cols&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">640&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;span class="na">rows&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">rows&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">rows&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">10&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">autoplay&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">autoplay&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">autoplay&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">preload&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">preload&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">preload&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">loop&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">loop&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">loop&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="na">start-at&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">start-at&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">start-at&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">0&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;span class="na">speed&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">speed&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">speed&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">1&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">idle-time-limit&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">idle-time-limit&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">idle-time-limit&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">poster&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">poster&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">poster&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">font-size&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">font-size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">font-size&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">theme&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">theme&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">theme&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">title&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">title&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">author&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">author&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">author&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">author-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">author-url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">author-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">author-img-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">author-img-url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">author-img-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;span class="p">&amp;gt;&amp;lt;/&lt;/span>&lt;span class="nt">asciinema-player&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Finally create a new post and set &lt;code>asciinema = true&lt;/code> in the metadata (for toml)&lt;/li>
+&lt;li>And embed the asciinema cast as follows in the body part&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">{{&lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nt">asciinema&lt;/span> &lt;span class="na">key&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;demo-folder/demo-cast.cast&amp;#34;&lt;/span> &lt;span class="na">rows&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;35&amp;#34;&lt;/span> &lt;span class="na">preload&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;1&amp;#34;&lt;/span> &lt;span class="p">&amp;gt;&lt;/span>}}
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>And don&amp;rsquo;t forget to put your .cast file in &lt;code>static/casts/demo-folder/democast.cast&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="first-attempt-at-the-task">First attempt at the task&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/embedding-asciinema-casts/embedding-asciinema-casts.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p>
+&lt;h2 id="correcting-the-mistakes-done-above">Correcting the mistakes done above&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/embedding-asciinema-casts/final.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p>
+&lt;p> &lt;/p>
+&lt;h1 id="for-the-stack-theme-the-kind-developer-of-the-theme-zhixuan666httpsgithubcomzhixuan666-mentioned-a-more-efficient-way-to-do-it">For the Stack theme, the kind developer of the theme &lt;a class="link" href="https://github.com/zhixuan666" target="_blank" rel="noopener"
+>@zhixuan666&lt;/a> mentioned a more efficient way to do it.&lt;/h1>
+&lt;p>Here is his reply to the GitHub issue: &lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack/issues/221#issuecomment-859537347" target="_blank" rel="noopener"
+>link&lt;/a>&lt;/p>
+&lt;p> &lt;/p></description></item><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;img src="https://kyteinsky.github.io/p/new-hugo-website/hugo-logo-wide.svg" alt="Featured image of post New Hugo Website" />&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
+&lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
+&lt;ul>
+&lt;li>Create an empty hugo site with boilerplate code&lt;/li>
+&lt;li>Initialize the site as a git repository&lt;/li>
+&lt;li>Add the theme as a submodule to receive updates automatically, can be just cloned in place or downloaded and extracted at the right place manually&lt;/li>
+&lt;li>Copy some example site&amp;rsquo;s posts and config file to the root folder of the website to edit them without disturbing the original theme files (these files override the respective default ones)&lt;/li>
+&lt;li>Edit the config.yaml file as per requirements, and delete the config.toml file that was placed by hugo&lt;/li>
+&lt;li>Create a new post with sone markdown text&lt;/li>
+&lt;li>host the site locally&lt;/li>
+&lt;/ul>
+&lt;h4 id="this-might-be-the-right-moment-to-commit-the-changes-as-starting-point-of-the-repository">This might be the right moment to commit the changes as starting point of the repository.&lt;/h4>
+&lt;h3 id="here-is-the-asciinema-terminal-cast">Here is the asciinema terminal cast:&lt;/h3>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/new-hugo-site/hugo-setup.cast"
+cols="640"
+rows="40"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Chinese Test</title><link>https://kyteinsky.github.io/p/test-chinese/</link><pubDate>Wed, 09 Sep 2020 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/test-chinese/</guid><description>&lt;img src="https://kyteinsky.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash.jpg" alt="Featured image of post Chinese Test" />&lt;h2 id="正文测试">正文测试&lt;/h2>
+&lt;p>而这些并不是完全重要，更加重要的问题是， 带着这些问题，我们来审视一下学生会退会。 既然如何， 对我个人而言，学生会退会不仅仅是一个重大的事件，还可能会改变我的人生。 我们不得不面对一个非常尴尬的事实，那就是， 可是，即使是这样，学生会退会的出现仍然代表了一定的意义。 学生会退会，发生了会如何，不发生又会如何。 经过上述讨论， 生活中，若学生会退会出现了，我们就不得不考虑它出现了的事实。 学生会退会，到底应该如何实现。 这样看来， 在这种困难的抉择下，本人思来想去，寝食难安。 对我个人而言，学生会退会不仅仅是一个重大的事件，还可能会改变我的人生。 就我个人来说，学生会退会对我的意义，不能不说非常重大。 莎士比亚曾经提到过，人的一生是短的，但如果卑劣地过这一生，就太长了。这似乎解答了我的疑惑。 莫扎特说过一句富有哲理的话，谁和我一样用功，谁就会和我一样成功。这启发了我， 对我个人而言，学生会退会不仅仅是一个重大的事件，还可能会改变我的人生。 学生会退会，到底应该如何实现。 一般来说， 从这个角度来看， 这种事实对本人来说意义重大，相信对这个世界也是有一定意义的。 在这种困难的抉择下，本人思来想去，寝食难安。 了解清楚学生会退会到底是一种怎么样的存在，是解决一切问题的关键。 一般来说， 生活中，若学生会退会出现了，我们就不得不考虑它出现了的事实。 问题的关键究竟为何？ 而这些并不是完全重要，更加重要的问题是。&lt;/p>
+&lt;p>奥斯特洛夫斯基曾经说过，共同的事业，共同的斗争，可以使人们产生忍受一切的力量。　带着这句话，我们还要更加慎重的审视这个问题： 一般来讲，我们都必须务必慎重的考虑考虑。 既然如此， 这种事实对本人来说意义重大，相信对这个世界也是有一定意义的。 带着这些问题，我们来审视一下学生会退会。 我认为， 我认为， 在这种困难的抉择下，本人思来想去，寝食难安。 问题的关键究竟为何？ 每个人都不得不面对这些问题。 在面对这种问题时， 要想清楚，学生会退会，到底是一种怎么样的存在。 我认为， 既然如此， 每个人都不得不面对这些问题。 在面对这种问题时， 那么， 我认为， 学生会退会因何而发生。&lt;/p>
+&lt;h2 id="引用">引用&lt;/h2>
+&lt;blockquote>
+&lt;p>思念是最暖的忧伤像一双翅膀&lt;br>
+让我停不了飞不远在过往游荡&lt;br>
+不告而别的你 就算为了我着想&lt;br>
+这么沉痛的呵护 我怎么能翱翔&lt;/p>
+&lt;p>&lt;em>&lt;a class="link" href="https://www.youtube.com/watch?v=3aypp_YlBzI" target="_blank" rel="noopener"
+>最暖的憂傷 - 田馥甄&lt;/a>&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="图片">图片&lt;/h2>
+&lt;p>&lt;figure style="flex-grow: 66; flex-basis: 160px">
+&lt;a href="https://kyteinsky.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash.jpg" data-size="667x1000">&lt;img src="https://kyteinsky.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash.jpg"
+srcset="https://kyteinsky.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash_hu595aaf3b3dbbb41af5aed8d3958cc9f9_13854_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash_hu595aaf3b3dbbb41af5aed8d3958cc9f9_13854_1024x0_resize_q75_box.jpg 1024w"
+width="667"
+height="1000"
+loading="lazy"
+alt="Photo by Florian Klauer on Unsplash">
+&lt;/a>
+&lt;figcaption>Photo by Florian Klauer on Unsplash&lt;/figcaption>
+&lt;/figure> &lt;figure style="flex-grow: 149; flex-basis: 359px">
+&lt;a href="https://kyteinsky.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash.jpg" data-size="1000x667">&lt;img src="https://kyteinsky.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash.jpg"
+srcset="https://kyteinsky.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash_hu0a3f1163de68d0b9471979ebf0ecf11e_32400_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash_hu0a3f1163de68d0b9471979ebf0ecf11e_32400_1024x0_resize_q75_box.jpg 1024w"
+width="1000"
+height="667"
+loading="lazy"
+alt="Photo by Luca Bravo on Unsplash">
+&lt;/a>
+&lt;figcaption>Photo by Luca Bravo on Unsplash&lt;/figcaption>
+&lt;/figure>&lt;/p>
+&lt;p>&lt;figure style="flex-grow: 133; flex-basis: 320px">
+&lt;a href="https://kyteinsky.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash.jpg" data-size="1000x750">&lt;img src="https://kyteinsky.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash.jpg"
+srcset="https://kyteinsky.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash_hu45a5e3ad5e058da6a00650ed8fd40bea_15530_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash_hu45a5e3ad5e058da6a00650ed8fd40bea_15530_1024x0_resize_q75_box.jpg 1024w"
+width="1000"
+height="750"
+loading="lazy"
+alt="Photo by Helena Hertz on Unsplash">
+&lt;/a>
+&lt;figcaption>Photo by Helena Hertz on Unsplash&lt;/figcaption>
+&lt;/figure> &lt;figure style="flex-grow: 66; flex-basis: 160px">
+&lt;a href="https://kyteinsky.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash.jpg" data-size="667x1000">&lt;img src="https://kyteinsky.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash.jpg"
+srcset="https://kyteinsky.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash_hub241c2a9c7a2caf7e16a2a5bbc7141ff_18711_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash_hub241c2a9c7a2caf7e16a2a5bbc7141ff_18711_1024x0_resize_q75_box.jpg 1024w"
+width="667"
+height="1000"
+loading="lazy"
+alt="Photo by Hudai Gayiran on Unsplash">
+&lt;/a>
+&lt;figcaption>Photo by Hudai Gayiran on Unsplash&lt;/figcaption>
+&lt;/figure>&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-markdown" data-lang="markdown">![&lt;span class="nt">Photo by Florian Klauer on Unsplash&lt;/span>](&lt;span class="na">florian-klauer-nptLmg6jqDo-unsplash.jpg&lt;/span>) ![&lt;span class="nt">Photo by Luca Bravo on Unsplash&lt;/span>](&lt;span class="na">luca-bravo-alS7ewQ41M8-unsplash.jpg&lt;/span>)
+![&lt;span class="nt">Photo by Helena Hertz on Unsplash&lt;/span>](&lt;span class="na">helena-hertz-wWZzXlDpMog-unsplash.jpg&lt;/span>) ![&lt;span class="nt">Photo by Hudai Gayiran on Unsplash&lt;/span>](&lt;span class="na">hudai-gayiran-3Od_VKcDEAA-unsplash.jpg&lt;/span>)
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>相册语法来自 &lt;a class="link" href="https://typlog.com/" target="_blank" rel="noopener"
+>Typlog&lt;/a>&lt;/p></description></item><item><title>Markdown Syntax Guide</title><link>https://kyteinsky.github.io/p/markdown-syntax-guide/</link><pubDate>Mon, 11 Mar 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/markdown-syntax-guide/</guid><description>&lt;img src="https://kyteinsky.github.io/p/markdown-syntax-guide/pawel-czerwinski-8uZPynIu-rQ-unsplash.jpg" alt="Featured image of post Markdown Syntax Guide" />&lt;p>This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.&lt;/p>
+&lt;h2 id="headings">Headings&lt;/h2>
+&lt;p>The following HTML &lt;code>&amp;lt;h1&amp;gt;&lt;/code>—&lt;code>&amp;lt;h6&amp;gt;&lt;/code> elements represent six levels of section headings. &lt;code>&amp;lt;h1&amp;gt;&lt;/code> is the highest section level while &lt;code>&amp;lt;h6&amp;gt;&lt;/code> is the lowest.&lt;/p>
+&lt;h1 id="h1">H1&lt;/h1>
+&lt;h2 id="h2">H2&lt;/h2>
+&lt;h3 id="h3">H3&lt;/h3>
+&lt;h4 id="h4">H4&lt;/h4>
+&lt;h5 id="h5">H5&lt;/h5>
+&lt;h6 id="h6">H6&lt;/h6>
+&lt;h2 id="paragraph">Paragraph&lt;/h2>
+&lt;p>Xerum, quo qui aut unt expliquam qui dolut labo. Aque venitatiusda cum, voluptionse latur sitiae dolessi aut parist aut dollo enim qui voluptate ma dolestendit peritin re plis aut quas inctum laceat est volestemque commosa as cus endigna tectur, offic to cor sequas etum rerum idem sintibus eiur? Quianimin porecus evelectur, cum que nis nust voloribus ratem aut omnimi, sitatur? Quiatem. Nam, omnis sum am facea corem alique molestrunt et eos evelece arcillit ut aut eos eos nus, sin conecerem erum fuga. Ri oditatquam, ad quibus unda veliamenimin cusam et facea ipsamus es exerum sitate dolores editium rerore eost, temped molorro ratiae volorro te reribus dolorer sperchicium faceata tiustia prat.&lt;/p>
+&lt;p>Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sapicia is sinveli squiatum, core et que aut hariosam ex eat.&lt;/p>
+&lt;h2 id="blockquotes">Blockquotes&lt;/h2>
+&lt;p>The blockquote element represents content that is quoted from another source, optionally with a citation which must be within a &lt;code>footer&lt;/code> or &lt;code>cite&lt;/code> element, and optionally with in-line changes such as annotations and abbreviations.&lt;/p>
+&lt;h4 id="blockquote-without-attribution">Blockquote without attribution&lt;/h4>
+&lt;blockquote>
+&lt;p>Tiam, ad mint andaepu dandae nostion secatur sequo quae.
+&lt;strong>Note&lt;/strong> that you can use &lt;em>Markdown syntax&lt;/em> within a blockquote.&lt;/p>
+&lt;/blockquote>
+&lt;h4 id="blockquote-with-attribution">Blockquote with attribution&lt;/h4>
+&lt;blockquote>
+&lt;p>Don&amp;rsquo;t communicate by sharing memory, share memory by communicating.&lt;!-- raw HTML omitted -->
+— &lt;!-- raw HTML omitted -->Rob Pike&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;!-- raw HTML omitted -->&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="tables">Tables&lt;/h2>
+&lt;p>Tables aren&amp;rsquo;t part of the core Markdown spec, but Hugo supports supports them out-of-the-box.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Name&lt;/th>
+&lt;th>Age&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Bob&lt;/td>
+&lt;td>27&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Alice&lt;/td>
+&lt;td>23&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h4 id="inline-markdown-within-tables">Inline Markdown within tables&lt;/h4>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Italics&lt;/th>
+&lt;th>Bold&lt;/th>
+&lt;th>Code&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;em>italics&lt;/em>&lt;/td>
+&lt;td>&lt;strong>bold&lt;/strong>&lt;/td>
+&lt;td>&lt;code>code&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="code-blocks">Code Blocks&lt;/h2>
+&lt;h4 id="code-block-with-backticks">Code block with backticks&lt;/h4>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="cp">&amp;lt;!doctype html&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">html&lt;/span> &lt;span class="na">lang&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;en&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">meta&lt;/span> &lt;span class="na">charset&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;utf-8&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Example HTML5 Document&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Test&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">html&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;h4 id="code-block-indented-with-four-spaces">Code block indented with four spaces&lt;/h4>
+&lt;pre>&lt;code>&amp;lt;!doctype html&amp;gt;
+&amp;lt;html lang=&amp;quot;en&amp;quot;&amp;gt;
+&amp;lt;head&amp;gt;
+&amp;lt;meta charset=&amp;quot;utf-8&amp;quot;&amp;gt;
+&amp;lt;title&amp;gt;Example HTML5 Document&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;p&amp;gt;Test&amp;lt;/p&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code>&lt;/pre>
+&lt;h4 id="code-block-with-hugos-internal-highlight-shortcode">Code block with Hugo&amp;rsquo;s internal highlight shortcode&lt;/h4>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="cp">&amp;lt;!doctype html&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">html&lt;/span> &lt;span class="na">lang&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;en&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">meta&lt;/span> &lt;span class="na">charset&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;utf-8&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Example HTML5 Document&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">title&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">head&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>Test&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">body&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">html&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;/code>&lt;/pre>&lt;/div>
+&lt;h2 id="list-types">List Types&lt;/h2>
+&lt;h4 id="ordered-list">Ordered List&lt;/h4>
+&lt;ol>
+&lt;li>First item&lt;/li>
+&lt;li>Second item&lt;/li>
+&lt;li>Third item&lt;/li>
+&lt;/ol>
+&lt;h4 id="unordered-list">Unordered List&lt;/h4>
+&lt;ul>
+&lt;li>List item&lt;/li>
+&lt;li>Another item&lt;/li>
+&lt;li>And another item&lt;/li>
+&lt;/ul>
+&lt;h4 id="nested-list">Nested list&lt;/h4>
+&lt;ul>
+&lt;li>Fruit
+&lt;ul>
+&lt;li>Apple&lt;/li>
+&lt;li>Orange&lt;/li>
+&lt;li>Banana&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Dairy
+&lt;ul>
+&lt;li>Milk&lt;/li>
+&lt;li>Cheese&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="other-elements--abbr-sub-sup-kbd-mark">Other Elements — abbr, sub, sup, kbd, mark&lt;/h2>
+&lt;p>&lt;!-- raw HTML omitted -->GIF&lt;!-- raw HTML omitted --> is a bitmap image format.&lt;/p>
+&lt;p>H&lt;!-- raw HTML omitted -->2&lt;!-- raw HTML omitted -->O&lt;/p>
+&lt;p>X&lt;!-- raw HTML omitted -->n&lt;!-- raw HTML omitted --> + Y&lt;!-- raw HTML omitted -->n&lt;!-- raw HTML omitted --> = Z&lt;!-- raw HTML omitted -->n&lt;!-- raw HTML omitted -->&lt;/p>
+&lt;p>Press &lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->CTRL&lt;!-- raw HTML omitted -->+&lt;!-- raw HTML omitted -->ALT&lt;!-- raw HTML omitted -->+&lt;!-- raw HTML omitted -->Delete&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted --> to end the session.&lt;/p>
+&lt;p>Most &lt;!-- raw HTML omitted -->salamanders&lt;!-- raw HTML omitted --> are nocturnal, and hunt for insects, worms, and other small creatures.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>The above quote is excerpted from Rob Pike&amp;rsquo;s &lt;a class="link" href="https://www.youtube.com/watch?v=PAAkCSZUG1c" target="_blank" rel="noopener"
+>talk&lt;/a> during Gopherfest, November 18, 2015.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Rich Content</title><link>https://kyteinsky.github.io/p/rich-content/</link><pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/rich-content/</guid><description>&lt;p>Hugo ships with several &lt;a class="link" href="https://gohugo.io/content-management/shortcodes/#use-hugo-s-built-in-shortcodes" target="_blank" rel="noopener"
+>Built-in Shortcodes&lt;/a> for rich content, along with a &lt;a class="link" href="https://gohugo.io/about/hugo-and-gdpr/" target="_blank" rel="noopener"
+>Privacy Config&lt;/a> and a set of Simple Shortcodes that enable static and no-JS versions of various social media embeds.&lt;/p>
+&lt;hr>
+&lt;h2 id="youtube-privacy-enhanced-shortcode">YouTube Privacy Enhanced Shortcode&lt;/h2>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/ZJthWmvUzzc"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div>
+&lt;!-- raw HTML omitted -->
+&lt;hr>
+&lt;h2 id="twitter-simple-shortcode">Twitter Simple Shortcode&lt;/h2>
+&lt;style type="text/css">
+.twitter-tweet {
+font: 14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+border-left: 4px solid #2b7bb9;
+padding-left: 1.5em;
+color: #555;
+}
+.twitter-tweet a {
+color: #2b7bb9;
+text-decoration: none;
+}
+blockquote.twitter-tweet a:hover,
+blockquote.twitter-tweet a:focus {
+text-decoration: underline;
+}
+&lt;/style>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">“In addition to being more logical, asymmetry has the advantage that its complete appearance is far more optically effective than symmetry.”&lt;br>— Jan Tschichold &lt;a href="https://t.co/gcv7SrhvJb">pic.twitter.com/gcv7SrhvJb&lt;/a>&lt;/p>&amp;mdash; Graphic Design History (@DesignReviewed) &lt;a href="https://twitter.com/DesignReviewed/status/1085870671291310081?ref_src=twsrc%5Etfw">January 17, 2019&lt;/a>&lt;/blockquote>
+&lt;!-- raw HTML omitted -->
+&lt;hr>
+&lt;h2 id="vimeo-simple-shortcode">Vimeo Simple Shortcode&lt;/h2>
+&lt;style>
+.__h_video {
+position: relative;
+padding-bottom: 56.23%;
+height: 0;
+overflow: hidden;
+width: 100%;
+background: #000;
+}
+.__h_video img {
+width: 100%;
+height: auto;
+color: #000;
+}
+.__h_video .play {
+height: 72px;
+width: 72px;
+left: 50%;
+top: 50%;
+margin-left: -36px;
+margin-top: -36px;
+position: absolute;
+cursor: pointer;
+}
+&lt;/style>
+&lt;div class="s_video_simple __h_video">
+&lt;a href="https://vimeo.com/4.8912912e&amp;#43;07" rel="noopener" target="_blank">
+&lt;img src="https://i.vimeocdn.com/video/337401969_640" srcset="https://i.vimeocdn.com/video/337401969_640 1x, https://i.vimeocdn.com/video/337401969_640 2x" alt="Sing Jan Swing - Kinetic Type">
+&lt;div class="play">&lt;svg version="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61 61">&lt;circle cx="30.5" cy="30.5" r="30.5" opacity=".8" fill="#000">&lt;/circle>&lt;path d="M25.3 19.2c-2.1-1.2-3.8-.2-3.8 2.2v18.1c0 2.4 1.7 3.4 3.8 2.2l16.6-9.1c2.1-1.2 2.1-3.2 0-4.4l-16.6-9z" fill="#fff">&lt;/path>&lt;/svg>&lt;/div>&lt;/a>&lt;/div></description></item><item><title>Placeholder Text</title><link>https://kyteinsky.github.io/p/placeholder-text/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/placeholder-text/</guid><description>&lt;img src="https://kyteinsky.github.io/p/placeholder-text/matt-le-SJSpo9hQf7s-unsplash.jpg" alt="Featured image of post Placeholder Text" />&lt;p>Lorem est tota propiore conpellat pectoribus de pectora summo.&lt;/p>
+&lt;p>Redit teque digerit hominumque toris verebor lumina non cervice subde tollit usus habet Arctonque, furores quas nec ferunt. Quoque montibus nunc caluere tempus inhospita parcite confusaque translucet patri vestro qui optatis lumine cognoscere flos nubis! Fronde ipsamque patulos Dryopen deorum.&lt;/p>
+&lt;ol>
+&lt;li>Exierant elisi ambit vivere dedere&lt;/li>
+&lt;li>Duce pollice&lt;/li>
+&lt;li>Eris modo&lt;/li>
+&lt;li>Spargitque ferrea quos palude&lt;/li>
+&lt;/ol>
+&lt;p>Rursus nulli murmur; hastile inridet ut ab gravi sententia! Nomine potitus silentia flumen, sustinet placuit petis in dilapsa erat sunt. Atria tractus malis.&lt;/p>
+&lt;ol>
+&lt;li>Comas hunc haec pietate fetum procerum dixit&lt;/li>
+&lt;li>Post torum vates letum Tiresia&lt;/li>
+&lt;li>Flumen querellas&lt;/li>
+&lt;li>Arcanaque montibus omnes&lt;/li>
+&lt;li>Quidem et&lt;/li>
+&lt;/ol>
+&lt;h1 id="vagus-elidunt">Vagus elidunt&lt;/h1>
+&lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
+&lt;p>&lt;a class="link" href="https://en.wikipedia.org/wiki/Canons_of_page_construction#Van_de_Graaf_canon" target="_blank" rel="noopener"
+>The Van de Graaf Canon&lt;/a>&lt;/p>
+&lt;h2 id="mane-refeci-capiebant-unda-mulcebat">Mane refeci capiebant unda mulcebat&lt;/h2>
+&lt;p>Victa caducifer, malo vulnere contra dicere aurato, ludit regale, voca! Retorsit colit est profanae esse virescere furit nec; iaculi matertera et visa est, viribus. Divesque creatis, tecta novat collumque vulnus est, parvas. &lt;strong>Faces illo pepulere&lt;/strong> tempus adest. Tendit flamma, ab opes virum sustinet, sidus sequendo urbis.&lt;/p>
+&lt;p>Iubar proles corpore raptos vero auctor imperium; sed et huic: manus caeli Lelegas tu lux. Verbis obstitit intus oblectamina fixis linguisque ausus sperare Echionides cornuaque tenent clausit possit. Omnia putatur. Praeteritae refert ausus; ferebant e primus lora nutat, vici quae mea ipse. Et iter nil spectatae vulnus haerentia iuste et exercebat, sui et.&lt;/p>
+&lt;p>Eurytus Hector, materna ipsumque ut Politen, nec, nate, ignari, vernum cohaesit sequitur. Vel &lt;strong>mitis temploque&lt;/strong> vocatus, inque alis, &lt;em>oculos nomen&lt;/em> non silvis corpore coniunx ne displicet illa. Crescunt non unus, vidit visa quantum inmiti flumina mortis facto sic: undique a alios vincula sunt iactata abdita! Suspenderat ego fuit tendit: luna, ante urbem Propoetides &lt;strong>parte&lt;/strong>.&lt;/p></description></item><item><title>Math Typesetting</title><link>https://kyteinsky.github.io/p/math-typesetting/</link><pubDate>Fri, 08 Mar 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/math-typesetting/</guid><description>&lt;p>Mathematical notation in a Hugo project can be enabled by using third party JavaScript libraries.&lt;/p>
+&lt;p>In this example we will be using &lt;a class="link" href="https://katex.org/" target="_blank" rel="noopener"
+>KaTeX&lt;/a>&lt;/p>
+&lt;ul>
+&lt;li>Create a partial under &lt;code>/layouts/partials/math.html&lt;/code>&lt;/li>
+&lt;li>Within this partial reference the &lt;a class="link" href="https://katex.org/docs/autorender.html" target="_blank" rel="noopener"
+>Auto-render Extension&lt;/a> or host these scripts locally.&lt;/li>
+&lt;li>Include the partial in your templates like so:&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="o">{{&lt;/span> &lt;span class="k">if&lt;/span> or .Params.math .Site.Params.math &lt;span class="o">}}&lt;/span>
+&lt;span class="o">{{&lt;/span> partial &lt;span class="s2">&amp;#34;math.html&amp;#34;&lt;/span> . &lt;span class="o">}}&lt;/span>
+&lt;span class="o">{{&lt;/span> end &lt;span class="o">}}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>To enable KaTex globally set the parameter &lt;code>math&lt;/code> to &lt;code>true&lt;/code> in a project&amp;rsquo;s configuration&lt;/li>
+&lt;li>To enable KaTex on a per page basis include the parameter &lt;code>math: true&lt;/code> in content files&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Note:&lt;/strong> Use the online reference of &lt;a class="link" href="https://katex.org/docs/supported.html" target="_blank" rel="noopener"
+>Supported TeX Functions&lt;/a>&lt;/p>
+&lt;h3 id="examples">Examples&lt;/h3>
+&lt;p>Block math:
+$$
+\varphi = 1+\frac{1} {1+\frac{1} {1+\frac{1} {1+\cdots} } }
+$$&lt;/p></description></item><item><title>Emoji Support</title><link>https://kyteinsky.github.io/p/emoji-support/</link><pubDate>Tue, 05 Mar 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/emoji-support/</guid><description>&lt;img src="https://kyteinsky.github.io/p/emoji-support/the-creative-exchange-d2zvqp3fpro-unsplash.jpg" alt="Featured image of post Emoji Support" />&lt;p>Emoji can be enabled in a Hugo project in a number of ways.&lt;/p>
+&lt;p>The &lt;a class="link" href="https://gohugo.io/functions/emojify/" target="_blank" rel="noopener"
+>&lt;code>emojify&lt;/code>&lt;/a> function can be called directly in templates or &lt;a class="link" href="https://gohugo.io/templates/shortcode-templates/#inline-shortcodes" target="_blank" rel="noopener"
+>Inline Shortcodes&lt;/a>.&lt;/p>
+&lt;p>To enable emoji globally, set &lt;code>enableEmoji&lt;/code> to &lt;code>true&lt;/code> in your site&amp;rsquo;s &lt;a class="link" href="https://gohugo.io/getting-started/configuration/" target="_blank" rel="noopener"
+>configuration&lt;/a> and then you can type emoji shorthand codes directly in content files; e.g.&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;p>The &lt;a class="link" href="http://www.emoji-cheat-sheet.com/" target="_blank" rel="noopener"
+>Emoji cheat sheet&lt;/a> is a useful reference for emoji shorthand codes.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>N.B.&lt;/strong> The above steps enable Unicode Standard emoji characters and sequences in Hugo, however the rendering of these glyphs depends on the browser and the platform. To style the emoji you can either use a third party emoji font or a font stack; e.g.&lt;/p>
+&lt;div class="highlight">&lt;pre class="chroma">&lt;code class="language-html" data-lang="html">.emoji {
+font-family: Apple Color Emoji, Segoe UI Emoji, NotoColorEmoji, Segoe UI Symbol, Android Emoji, EmojiSymbols;
+}&lt;/code>&lt;/pre>&lt;/div></description></item></channel></rss>
