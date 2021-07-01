@@ -38,7 +38,7 @@ asciinema = true
 	* Used to create a private space in cloud for related, non-public services to live in
 	* One or more services can be exposed to the internet and other VPCs or AWS services, while secure services like databases can be secured and only accessed by some hidden service inside the VPC making it more secure
 
-## Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC delted through Console because of security group being of type 'default' was not being deleted through CLI for some convoluted reason
+## Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC deleted through Console because of security group being of type 'default' was not being deleted through CLI for some convoluted reason
 
 {{< asciinema key="aws-basics/aws-basics.cast" rows=35 preload="1" >}}
 
