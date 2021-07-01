@@ -27,7 +27,7 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="creating-two-ec2-instances-inside-a-vpc-and-one-s3-bucket-using-aws-cli-and-then-clearing-off-all-the-resources-vpc-delted-through-console-because-of-security-group-being-of-type-default-was-not-being-deleted-through-cli-for-some-convoluted-reason">Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC delted through Console because of security group being of type &amp;lsquo;default&amp;rsquo; was not being deleted through CLI for some convoluted reason&lt;/h2>
+&lt;h2 id="creating-two-ec2-instances-inside-a-vpc-and-one-s3-bucket-using-aws-cli-and-then-clearing-off-all-the-resources-vpc-deleted-through-console-because-of-security-group-being-of-type-default-was-not-being-deleted-through-cli-for-some-convoluted-reason">Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC deleted through Console because of security group being of type &amp;lsquo;default&amp;rsquo; was not being deleted through CLI for some convoluted reason&lt;/h2>
 &lt;p>
 &lt;asciinema-player
 src="https://kyteinsky.github.io/casts/aws-basics/aws-basics.cast"
