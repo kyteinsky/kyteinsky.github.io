@@ -27,18 +27,18 @@
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;h2 id="creating-two-ec2-instances-one-s3-bucket-using-aws-cli">Creating two EC2 instances, one S3 bucket using AWS CLI&lt;/h2>
-&lt;p> &lt;/p>
+&lt;h2 id="creating-two-ec2-instances-inside-a-vpc-and-one-s3-bucket-using-aws-cli-and-then-clearing-off-all-the-resources-vpc-delted-through-console-because-of-security-group-being-of-type-default-was-not-being-deleted-through-cli-for-some-convoluted-reason">Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC delted through Console because of security group being of type &amp;lsquo;default&amp;rsquo; was not being deleted through CLI for some convoluted reason&lt;/h2>
 &lt;p>
 &lt;asciinema-player
-src="https://kyteinsky.github.io/casts/git-basics/git-acp.cast"
+src="https://kyteinsky.github.io/casts/aws-basics/aws-basics.cast"
 cols="640"
 rows="35"
 preload="1"
 start-at="0"
 speed="1"
 >&lt;/asciinema-player>
-&lt;/p></description></item><item><title>Installing Terraform and Creating an EC2 Instance</title><link>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</link><pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</guid><description>&lt;img src="https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/terraform-logo-extended.jpg" alt="Featured image of post Installing Terraform and Creating an EC2 Instance" />&lt;p> &lt;/p>
+&lt;/p>
+&lt;p> &lt;/p></description></item><item><title>Installing Terraform and Creating an EC2 Instance</title><link>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</link><pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</guid><description>&lt;img src="https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/terraform-logo-extended.jpg" alt="Featured image of post Installing Terraform and Creating an EC2 Instance" />&lt;p> &lt;/p>
 &lt;h2 id="ensure-the-prerequisites">Ensure the prerequisites&lt;/h2>
 &lt;ul>
 &lt;li>An AWS Account&lt;/li>
