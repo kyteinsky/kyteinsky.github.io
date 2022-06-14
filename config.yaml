@@ -81,7 +81,7 @@ params:
 
     opengraph:
         twitter:
-            site: kyteinsky
+            site:
 
             # Available values: summary, summary_large_image
             card: summary_large_image
