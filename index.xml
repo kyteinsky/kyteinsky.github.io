@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>kyte codes</title><link>https://kyteinsky.github.io/</link><description>Recent content on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 12 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>GNOME Introductory Post</title><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;img src="https://kyteinsky.github.io/p/gnome-introductory-post/GNOME-logo-500x316.png" alt="Featured image of post GNOME Introductory Post" />&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>kyte codes</title><link>https://kyteinsky.github.io/</link><description>Recent content on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 12 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>GNOME Introductory Post</title><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
 >GNOME Network Displays app&lt;/a> that has Miracast support as of now. It can be installed through &lt;a class="link" href="https://flathub.org/apps/details/org.gnome.NetworkDisplays" target="_blank" rel="noopener"
 >flatpak&lt;/a> as well.&lt;/p>
 &lt;h3 id="details">Details&lt;/h3>
@@ -48,7 +48,7 @@
 &lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/debugging/cac_tool" target="_blank" rel="noopener"
 >CaC Tool&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p> &lt;/p></description></item><item><title>Playing Around with Kubernetes in EC2</title><link>https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/</link><pubDate>Tue, 06 Jul 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/</guid><description>&lt;img src="https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/kubernetes-logo.png" alt="Featured image of post Playing Around with Kubernetes in EC2" />&lt;p> &lt;/p>
+&lt;p> &lt;/p></description></item><item><title>Playing Around with Kubernetes in EC2</title><link>https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/</link><pubDate>Tue, 06 Jul 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/</guid><description>&lt;p> &lt;/p>
 &lt;h3 id="the-minikube-cluster">The Minikube Cluster&lt;/h3>
 &lt;p>It is a local playground to learn or test your code as it would run on a full-fledged Kubernetes Cluster. It creates a small cluster consisting of only one node.&lt;br>
 The command &lt;code>minikube start&lt;/code> launches the cluster with options for bare-metal, ssh, docker among others. The cluster can be managed with CLI but it also offers a GUI in the web browser, can be launched with &lt;code>minikube dashboard&lt;/code> command.&lt;br>
@@ -152,7 +152,7 @@ nginx-pod 2/2 Running 0 6s
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:47 UTC &lt;span class="m">2021&lt;/span>
 &lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:48 UTC &lt;span class="m">2021&lt;/span>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>kubectl describe po&lt;/code> command can be used to get detailed information about the pods running in the cluster.&lt;/p>
-&lt;p> &lt;/p></description></item><item><title>AWS Console and CLI Exploration</title><link>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</link><pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</guid><description>&lt;img src="https://kyteinsky.github.io/p/aws-console-and-cli-exploration/aws-logo-full.png" alt="Featured image of post AWS Console and CLI Exploration" />&lt;p> &lt;/p>
+&lt;p> &lt;/p></description></item><item><title>AWS Console and CLI Exploration</title><link>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</link><pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</guid><description>&lt;p> &lt;/p>
 &lt;h2 id="inside-the-aws-console">Inside the AWS Console:&lt;/h2>
 &lt;ul>
 &lt;li>
@@ -192,7 +192,7 @@ start-at="0"
 speed="1"
 >&lt;/asciinema-player>
 &lt;/p>
-&lt;p> &lt;/p></description></item><item><title>Installing Terraform and Creating an EC2 Instance</title><link>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</link><pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</guid><description>&lt;img src="https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/terraform-logo-extended.jpg" alt="Featured image of post Installing Terraform and Creating an EC2 Instance" />&lt;p> &lt;/p>
+&lt;p> &lt;/p></description></item><item><title>Installing Terraform and Creating an EC2 Instance</title><link>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</link><pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</guid><description>&lt;p> &lt;/p>
 &lt;h2 id="ensure-the-prerequisites">Ensure the prerequisites&lt;/h2>
 &lt;ul>
 &lt;li>An AWS Account&lt;/li>
@@ -260,7 +260,7 @@ preload="1"
 start-at="0"
 speed="1"
 >&lt;/asciinema-player>
-&lt;/p></description></item><item><title>Hosting Docker in Cloud (Azure)</title><link>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</link><pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</guid><description>&lt;img src="https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/rafael-garcin-sqZ4GeyYGx8-unsplash.jpg" alt="Featured image of post Hosting Docker in Cloud (Azure)" />&lt;p> &lt;/p>
+&lt;/p></description></item><item><title>Hosting Docker in Cloud (Azure)</title><link>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</link><pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</guid><description>&lt;p> &lt;/p>
 &lt;h2 id="azure-part-of-story">Azure part of story&lt;/h2>
 &lt;ul>
 &lt;li>First create one Azure account, I am using a student account&lt;/li>
@@ -309,7 +309,7 @@ preload="1"
 start-at="0"
 speed="1"
 >&lt;/asciinema-player>
-&lt;/p></description></item><item><title>Git Add, Git Commit and Git Push</title><link>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</link><pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</guid><description>&lt;img src="https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/roman-synkevych-UT8LMo-wlyk-unsplash.jpg" alt="Featured image of post Git Add, Git Commit and Git Push" />&lt;h2 id="how-to-add-and-commit-changes-in-the-and-then-push-the-changes-to-a-remote-repository-here-github">How to add and commit changes in the and then push the changes to a remote repository (here GitHub)&lt;/h2>
+&lt;/p></description></item><item><title>Git Add, Git Commit and Git Push</title><link>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</link><pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</guid><description>&lt;h2 id="how-to-add-and-commit-changes-in-the-and-then-push-the-changes-to-a-remote-repository-here-github">How to add and commit changes in the and then push the changes to a remote repository (here GitHub)&lt;/h2>
 &lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
 &lt;ul>
 &lt;li>Change some files or create some&lt;/li>
@@ -411,7 +411,7 @@ speed="1"
 >@zhixuan666&lt;/a> mentioned a more efficient way to do it.&lt;/h1>
 &lt;p>Here is his reply to the GitHub issue: &lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack/issues/221#issuecomment-859537347" target="_blank" rel="noopener"
 >link&lt;/a>&lt;/p>
-&lt;p> &lt;/p></description></item><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;img src="https://kyteinsky.github.io/p/new-hugo-website/hugo-logo-wide.svg" alt="Featured image of post New Hugo Website" />&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
+&lt;p> &lt;/p></description></item><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
 &lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
 &lt;ul>
 &lt;li>Create an empty hugo site with boilerplate code&lt;/li>
@@ -433,4 +433,23 @@ preload="1"
 start-at="0"
 speed="1"
 >&lt;/asciinema-player>
-&lt;/p></description></item></channel></rss>
+&lt;/p></description></item><item><title>Archives</title><link>https://kyteinsky.github.io/archives/</link><pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/archives/</guid><description/></item><item><title>About</title><link>https://kyteinsky.github.io/about/</link><pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/about/</guid><description>&lt;p>Written in Go, Hugo is an open source static site generator available under the &lt;a class="link" href="https://github.com/gohugoio/hugo/blob/master/LICENSE" target="_blank" rel="noopener"
+>Apache Licence 2.0.&lt;/a> Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.&lt;/p>
+&lt;p>Hugo makes use of a variety of open source projects including:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://github.com/yuin/goldmark" target="_blank" rel="noopener"
+>https://github.com/yuin/goldmark&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/alecthomas/chroma" target="_blank" rel="noopener"
+>https://github.com/alecthomas/chroma&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/muesli/smartcrop" target="_blank" rel="noopener"
+>https://github.com/muesli/smartcrop&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/spf13/cobra" target="_blank" rel="noopener"
+>https://github.com/spf13/cobra&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/spf13/viper" target="_blank" rel="noopener"
+>https://github.com/spf13/viper&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>Hugo is ideal for blogs, corporate websites, creative portfolios, online magazines, single page applications or even a website with thousands of pages.&lt;/p>
+&lt;p>Hugo is for people who want to hand code their own website without worrying about setting up complicated runtimes, dependencies and databases.&lt;/p>
+&lt;p>Websites built with Hugo are extremelly fast, secure and can be deployed anywhere including, AWS, GitHub Pages, Heroku, Netlify and any other hosting provider.&lt;/p>
+&lt;p>Learn more and contribute on &lt;a class="link" href="https://github.com/gohugoio" target="_blank" rel="noopener"
+>GitHub&lt;/a>.&lt;/p></description></item><item><title>Search</title><link>https://kyteinsky.github.io/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/search/</guid><description/></item></channel></rss>

@@ -1,1 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>themes on kyte codes</title><link>https://kyteinsky.github.io/tags/themes/</link><description>Recent content in themes on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 01 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/themes/index.xml" rel="self" type="application/rss+xml"/><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page Outline of steps to be performed: Create an empty hugo site with boilerplate code Initialize the site as a git repository Add the theme as a submodule to receive updates automatically, can be just cloned in place or downloaded and extracted at the right place manually Copy some example site&amp;rsquo;s posts and config file to the root folder of the website to edit them without disturbing the original theme files (these files override the respective default ones) Edit the config.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>themes on kyte codes</title><link>https://kyteinsky.github.io/tags/themes/</link><description>Recent content in themes on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 01 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/themes/index.xml" rel="self" type="application/rss+xml"/><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
+&lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
+&lt;ul>
+&lt;li>Create an empty hugo site with boilerplate code&lt;/li>
+&lt;li>Initialize the site as a git repository&lt;/li>
+&lt;li>Add the theme as a submodule to receive updates automatically, can be just cloned in place or downloaded and extracted at the right place manually&lt;/li>
+&lt;li>Copy some example site&amp;rsquo;s posts and config file to the root folder of the website to edit them without disturbing the original theme files (these files override the respective default ones)&lt;/li>
+&lt;li>Edit the config.yaml file as per requirements, and delete the config.toml file that was placed by hugo&lt;/li>
+&lt;li>Create a new post with sone markdown text&lt;/li>
+&lt;li>host the site locally&lt;/li>
+&lt;/ul>
+&lt;h4 id="this-might-be-the-right-moment-to-commit-the-changes-as-starting-point-of-the-repository">This might be the right moment to commit the changes as starting point of the repository.&lt;/h4>
+&lt;h3 id="here-is-the-asciinema-terminal-cast">Here is the asciinema terminal cast:&lt;/h3>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/new-hugo-site/hugo-setup.cast"
+cols="640"
+rows="40"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item></channel></rss>

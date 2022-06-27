@@ -1,2 +1,41 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>cli on kyte codes</title><link>https://kyteinsky.github.io/tags/cli/</link><description>Recent content in cli on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 29 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/cli/index.xml" rel="self" type="application/rss+xml"/><item><title>AWS Console and CLI Exploration</title><link>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</link><pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</guid><description>Inside the AWS Console: Explored compute machine options
-EC2 is the easiest of all, provides vanilla virtual machine experience for fully self-managing the infrastructure Lambda is for small fuctions or API calls App Runner provides a full-managed infrastructure to run our app handling all the scaling, load balancing, installation of software and deployment. Elastic Beanstalk is a similar service to App Runner, but there is a slight difference, Elastic Beanstalk provides more control over infrastructure after deployment, whereas App Runner manages it fully even after deployment.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>cli on kyte codes</title><link>https://kyteinsky.github.io/tags/cli/</link><description>Recent content in cli on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 29 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/cli/index.xml" rel="self" type="application/rss+xml"/><item><title>AWS Console and CLI Exploration</title><link>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</link><pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</guid><description>&lt;p> &lt;/p>
+&lt;h2 id="inside-the-aws-console">Inside the AWS Console:&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>Explored compute machine options&lt;/p>
+&lt;ul>
+&lt;li>EC2 is the easiest of all, provides vanilla virtual machine experience for fully self-managing the infrastructure&lt;/li>
+&lt;li>Lambda is for small fuctions or API calls&lt;/li>
+&lt;li>App Runner provides a full-managed infrastructure to run our app handling all the scaling, load balancing, installation of software and deployment.&lt;/li>
+&lt;li>Elastic Beanstalk is a similar service to App Runner, but there is a slight difference, Elastic Beanstalk provides more control over infrastructure after deployment, whereas App Runner manages it fully even after deployment. &lt;a class="link" href="https://acloudguru.com/blog/engineering/what-you-need-to-know-about-aws-app-runner" target="_blank" rel="noopener"
+>(source)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Explored storage options&lt;/p>
+&lt;ul>
+&lt;li>S3, Simple Storage Service, used for every purpose like storing files and also hosting static websites&lt;/li>
+&lt;li>EFS, Elastic File System, used to store files that can be attached to multiple EC2 instances, are fully-managed and scale automatically&lt;/li>
+&lt;li>FSx is used for Windows Servers and playing nice with its ecosystem&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>VPC&lt;/p>
+&lt;ul>
+&lt;li>Used to create a private space in cloud for related, non-public services to live in&lt;/li>
+&lt;li>One or more services can be exposed to the internet and other VPCs or AWS services, while secure services like databases can be secured and only accessed by some hidden service inside the VPC making it more secure&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="creating-two-ec2-instances-inside-a-vpc-and-one-s3-bucket-using-aws-cli-and-then-clearing-off-all-the-resources-vpc-deleted-through-console-because-of-security-group-being-of-type-default-was-not-being-deleted-through-cli-for-some-convoluted-reason">Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC deleted through Console because of security group being of type &amp;lsquo;default&amp;rsquo; was not being deleted through CLI for some convoluted reason&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/aws-basics/aws-basics.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p>
+&lt;p> &lt;/p></description></item></channel></rss>
