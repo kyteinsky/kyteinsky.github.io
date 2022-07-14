@@ -1,4 +1,102 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on kyte codes</title><link>https://kyteinsky.github.io/post/</link><description>Recent content in Posts on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 12 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>GNOME Introductory Post</title><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on kyte codes</title><link>https://kyteinsky.github.io/post/</link><description>Recent content in Posts on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 05 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>Chromecast Connect</title><link>https://kyteinsky.github.io/p/chromecast-connect/</link><pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-connect/</guid><description>&lt;p>It has been a while studying and working with the Chromecast Protocol. This protocol is proprietary, and officially only the Chrome browser, Android, and iOS platforms support casting to a Chromecast-enabled device.&lt;br>
+Now, Chromium is open source, and so is Android, but we would not want anything to do with Android for obvious reasons, not to mention this feature may be tucked away in Google Play Services.&lt;br>
+So we settle with Chromium which is written in C++. Thankfully almost all of the hard work was done by many other open source projects, notably Node CastV2. Not only this project provides a simple implementation for the Chromecast protocol but also a written explanation of the underlying stuff and how things actually work.&lt;br>
+All I need to figure out is how to implement that is C.&lt;/p>
+&lt;p>A brief overview of the connection and communication is as follows:&lt;/p>
+&lt;ul>
+&lt;li>We start by discovering the Chromecast devices using mDNS (Avahi) for devices named &amp;ldquo;googlecast&amp;rdquo;&lt;/li>
+&lt;li>Next up we open a socket connection to the selected device on port 8009&lt;/li>
+&lt;li>We then negotiate a TLS connection on the same socket connection&lt;/li>
+&lt;li>Now comes the part where we open a &amp;ldquo;virtual connection&amp;rdquo; with the device&lt;/li>
+&lt;li>With that done, the Chromecast device expects a &amp;ldquo;PING&amp;rdquo; message every 5 seconds to keep the virtual connection alive&lt;/li>
+&lt;li>We are in the position to send and receive messages now&lt;/li>
+&lt;/ul>
+&lt;p>The messages are JSON encoded and serialized in protobuf according to the proto file conveniently found in the Chromium source code. Before sending the binary over, we prefix it with 4 bytes of packet length in Big Endian order. JSON is universal, good and easy to understand mostly because it is text, but what about protobuf? It is binary. Handy-dandy library protobuf-c save the day.&lt;/p>
+&lt;p>Here is what the proto file looks like:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-proto" data-lang="proto">&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Copyright 2013 The Chromium Authors. All rights reserved.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// Use of this source code is governed by a BSD-style license that can be
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">// found in the LICENSE file.
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1">&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="n">syntax&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s">&amp;#34;proto2&amp;#34;&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="k">option&lt;/span> &lt;span class="n">optimize_for&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">LITE_RUNTIME&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kn">package&lt;/span> &lt;span class="nn">castchannel&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">CastMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">ProtocolVersion&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">CASTV2_1_0&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="n">ProtocolVersion&lt;/span> &lt;span class="n">protocol_version&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">source_id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">destination_id&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">namespace&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">PayloadType&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">STRING&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">BINARY&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="n">PayloadType&lt;/span> &lt;span class="n">payload_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">optional&lt;/span> &lt;span class="kt">string&lt;/span> &lt;span class="n">payload_utf8&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">6&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">optional&lt;/span> &lt;span class="kt">bytes&lt;/span> &lt;span class="n">payload_binary&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">AuthChallenge&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">AuthResponse&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">bytes&lt;/span> &lt;span class="n">signature&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="kt">bytes&lt;/span> &lt;span class="n">client_auth_certificate&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">AuthError&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="kd">enum&lt;/span> &lt;span class="n">ErrorType&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">INTERNAL_ERROR&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="n">NO_TLS&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">required&lt;/span> &lt;span class="n">ErrorType&lt;/span> &lt;span class="n">error_type&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="kd">message&lt;/span> &lt;span class="nc">DeviceAuthMessage&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">optional&lt;/span> &lt;span class="n">AuthChallenge&lt;/span> &lt;span class="n">challenge&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">optional&lt;/span> &lt;span class="n">AuthResponse&lt;/span> &lt;span class="n">response&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span> &lt;span class="k">optional&lt;/span> &lt;span class="n">AuthError&lt;/span> &lt;span class="n">error&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="err">&lt;/span>&lt;span class="p">}&lt;/span>&lt;span class="err">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>We can send many types of messages like &lt;code>CONNECT&lt;/code>, &lt;code>PING&lt;/code>, &lt;code>GET_STATUS&lt;/code>, &lt;code>GET_APP_AVAILIBILITY&lt;/code>, &lt;code>STOP&lt;/code>, &lt;code>CLOSE&lt;/code>, etc.&lt;br>
+These messages are sent in their respective namespaces (some of them are: &lt;code>urn:x-cast:com.google.cast.tp.connection&lt;/code>, &lt;code>urn:x-cast:com.google.cast.tp.heartbeat&lt;/code>, &lt;code>urn:x-cast:com.google.cast.receiver&lt;/code>) along with some other values such as &lt;code>sender_id&lt;/code>, &lt;code>destination_id&lt;/code>, &lt;code>payload_type&lt;/code>, &lt;code>payload_utf8&lt;/code>, etc.&lt;br>
+Different namespaces don&amp;rsquo;t mean we create new channels for each one. They are just like the other values in the protobuf message.&lt;/p>
+&lt;p>We won&amp;rsquo;t bother ourselves to verify the authenticity of the Chromecast device we are talking to. Thus all the Auth- messages shall not be entertained. We are much more interested in the &lt;code>CastMessage&lt;/code>.&lt;br>
+Protobuf-c comes with a lot of helper functions, but it offers yet more. We use &lt;code>protoc&lt;/code>, &amp;ldquo;a code generator that converts Protocol Buffer .proto files to C descriptor code&amp;rdquo;.&lt;/p>
+&lt;p>Having the TLS connection set up, we serialize a connect message and send it over.&lt;br>
+For some odd reason when I sent &lt;code>{ &amp;quot;type&amp;quot;: &amp;quot;CONNECT&amp;quot; }&lt;/code>, it replied with &lt;code>{ &amp;quot;type&amp;quot;: &amp;quot;CLOSE&amp;quot; }&lt;/code>, replied &lt;code>{ &amp;quot;type&amp;quot;: &amp;quot;PING&amp;quot; }&lt;/code> with &lt;code>{ &amp;quot;type&amp;quot;: &amp;quot;PONG&amp;quot; }&lt;/code>, and &lt;code>{ &amp;quot;type&amp;quot;: &amp;quot;GET_STATUS&amp;quot; }&lt;/code> with &lt;code>{ &amp;quot;type&amp;quot;: &amp;quot;CLOSE&amp;quot; }&lt;/code>.&lt;br>
+When I insisted on connection multiple times, it got mad and stopped replying to my messages :/&lt;br>
+It still played ping pong though (replied to all the ping messages with pong).&lt;/p>
+&lt;p>We haven&amp;rsquo;t come to terms since then. Was it because I left it hanging, and I have a feeling it must have waited for my messages all night?&lt;br>
+I tried to sever all ties and make them all over again, shut it down and revived it, changed my address (local IP), and changed my name (sender_id), but who knows what is going inside that little mind of it.&lt;/p>
+&lt;p>Fear not our next mission involves peering into that mind and getting to the root cause of this confusion (Custom Web Receiver).&lt;/p>
+&lt;hr>
+&lt;p>We didn&amp;rsquo;t talk about the Custom Web Receiver this time and the protocols that would be implemented. Hang tight because that is what we are going to do in the coming days.&lt;/p>
+&lt;p>Many thanks to Benjamin and Claudio! I couldn&amp;rsquo;t have made it without their help and advice.&lt;/p>
+&lt;hr>
+&lt;p>Relevant Links:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays/-/merge_requests/171" target="_blank" rel="noopener"
+>Merge Request&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/" target="_blank" rel="noopener"
+>Chromecast Docs&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/thibauts/node-castv2" target="_blank" rel="noopener"
+>Node CastV2&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://chromium.googlesource.com/chromium/src.git" target="_blank" rel="noopener"
+>Chromium Source Code&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://github.com/protobuf-c/protobuf-c" target="_blank" rel="noopener"
+>Protobuf-c&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/reference/web_receiver/cast.framework.messages" target="_blank" rel="noopener"
+>Cast Framework Messages&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p> &lt;/p></description></item><item><title>GNOME Introductory Post</title><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
 >GNOME Network Displays app&lt;/a> that has Miracast support as of now. It can be installed through &lt;a class="link" href="https://flathub.org/apps/details/org.gnome.NetworkDisplays" target="_blank" rel="noopener"
 >flatpak&lt;/a> as well.&lt;/p>
 &lt;h3 id="details">Details&lt;/h3>
@@ -206,7 +304,7 @@ speed="1"
 &lt;h2 id="creating-a-config-file-for-terraform-to-understand">Creating a config file for terraform to understand&lt;/h2>
 &lt;ul>
 &lt;li>Create a directory and switch to it&lt;/li>
-&lt;li>Create a file named main.tf and populate it with the following sample configuration,
+&lt;li>Create a file named main.tf and populate it with the following sample configuration,&lt;br>
 where
 &lt;ul>
 &lt;li>&lt;code>app_server&lt;/code> is the name of the instance&lt;/li>
