@@ -134,3 +134,8 @@ related:
 markup:
     highlight:
         noClasses: false
+    defaultMarkdownHandler: goldmark
+    goldmark:
+        renderer:
+            hardWraps: true
+
