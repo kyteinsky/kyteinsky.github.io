@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>push on kyte codes</title><link>https://kyteinsky.github.io/tags/push/</link><description>Recent content in push on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 11 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/push/index.xml" rel="self" type="application/rss+xml"/><item><title>Git Add, Git Commit and Git Push</title><link>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</link><pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</guid><description>&lt;h2 id="how-to-add-and-commit-changes-in-the-and-then-push-the-changes-to-a-remote-repository-here-github">How to add and commit changes in the and then push the changes to a remote repository (here GitHub)&lt;/h2>
+&lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
+&lt;ul>
+&lt;li>Change some files or create some&lt;/li>
+&lt;li>Issue&lt;code>git add &amp;lt;name of files&amp;gt;&lt;/code>command to add files to be committed&lt;/li>
+&lt;li>Then commit them using &lt;code>git commit -am &amp;lt;commit message&amp;gt;&lt;/code>, here a is for all files, m is for message, and then you place your message for the changes&lt;/li>
+&lt;li>(optional) Finally, push the changes to a remote repository&lt;/li>
+&lt;/ul>
+&lt;h2 id="lets-see-this-in-action">Let&amp;rsquo;s see this in action&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/git-basics/git-acp.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item></channel></rss>

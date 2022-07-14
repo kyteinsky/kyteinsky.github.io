@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>azure on kyte codes</title><link>https://kyteinsky.github.io/tags/azure/</link><description>Recent content in azure on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 15 Jun 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/azure/index.xml" rel="self" type="application/rss+xml"/><item><title>Hosting Docker in Cloud (Azure)</title><link>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</link><pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</guid><description>&lt;p> &lt;/p>
+&lt;h2 id="azure-part-of-story">Azure part of story&lt;/h2>
+&lt;ul>
+&lt;li>First create one Azure account, I am using a student account&lt;/li>
+&lt;li>Create a basic instance (Ubuntu image works for most cases) with 1 vCPU and 1 GiB RAM, or according to your needs&lt;/li>
+&lt;li>Download the private key and SSH into the instance&lt;/li>
+&lt;li>Update the packages&lt;/li>
+&lt;li>Install docker (following &lt;a class="link" href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener"
+>this&lt;/a> guide)&lt;/li>
+&lt;/ul>
+&lt;p>Let&amp;rsquo;s move on to the local machine setup&lt;/p>
+&lt;p> &lt;/p>
+&lt;h2 id="local-machine-setup">Local machine setup&lt;/h2>
+&lt;h3 id="ssh-keys-setup">SSH Keys Setup&lt;/h3>
+&lt;ul>
+&lt;li>We need to install docker here as well&lt;/li>
+&lt;li>Add ssh key (downloaded from Azure portal) to OpenSSH Auth agent&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">eval&lt;/span> &lt;span class="s1">&amp;#39;ssh-agent&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ssh-add &amp;lt;path-to-pem-file&amp;gt;/&amp;lt;file-name&amp;gt;.pem
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;em>(or)&lt;/em> Add &lt;code>AddKeysToAgent yes&lt;/code> to ~/.ssh/config file to automatically do that for you&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;AddKeysToAgent yes&amp;#34;&lt;/span> &amp;gt;&amp;gt; ~/.ssh/config
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p> &lt;/p>
+&lt;h3 id="docker-context-setup">Docker Context Setup&lt;/h3>
+&lt;ul>
+&lt;li>Create a new docker context to talk to the docker in Azure instance with command&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker context create azure-box --docker &lt;span class="s2">&amp;#34;host=ssh://azureuser@&amp;lt;public-ip-of-instance&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>See all available contexts using &lt;code>docker context ls&lt;/code>&lt;/li>
+&lt;li>Switching to Azure docker is done using command &lt;code>docker context use azure-box&lt;/code> and back to the local docker using &lt;code>docker context use default&lt;/code>&lt;/li>
+&lt;li>Now when we issue commands to docker as usual &lt;code>docker ps&lt;/code>, it is directly communicating to the docker running in the Azure instance&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Note: &amp;lsquo;azure-box&amp;rsquo; is just a name, can be replaced with anything of your choice&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="-now-you-have-docker-running-in-the-cloud-accessible-from-the-terminal">🎉 Now you have docker running in the cloud, accessible from the terminal&lt;/h2>
+&lt;h3 id="finally-just-for-testing-we-can-spin-up-a-ubuntu-container-and-bash-into-it">Finally just for testing, we can spin up a Ubuntu container and bash into it:&lt;/h3>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/docker-cloud/docker-cloud.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item></channel></rss>

@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on kyte codes</title><link>https://kyteinsky.github.io/post/</link><description>Recent content in Posts on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 12 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/post/index.xml" rel="self" type="application/rss+xml"/><item><title>GNOME Introductory Post</title><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
+>GNOME Network Displays app&lt;/a> that has Miracast support as of now. It can be installed through &lt;a class="link" href="https://flathub.org/apps/details/org.gnome.NetworkDisplays" target="_blank" rel="noopener"
+>flatpak&lt;/a> as well.&lt;/p>
+&lt;h3 id="details">Details&lt;/h3>
+&lt;p>Linux desktop users will be able to cast their screens to Miracast and Chromecast devices. For the Android TVs that feature both of them, it would be wise to opt for the Chromecast path when both the devices share the same router (i.e. are on the same network) since Miracast would require setting up a WiFi-Direct connection to function (may be faster with less latency, may not be worth the trouble).&lt;/p>
+&lt;p>I believe this will see the light of day with very helpful and experienced mentors, &lt;strong>Claudio Wunder&lt;/strong> and &lt;strong>Benjamin Berg&lt;/strong>.&lt;/p>
+&lt;h3 id="progress">Progress&lt;/h3>
+&lt;p>We started by looking into the Chromecast documentation (an adventure in itself). So there are two ends to deal with - the sender one and the receiver one.&lt;/p>
+&lt;h4 id="the-receiver-end">The receiver end&lt;/h4>
+&lt;p>There are two options here: &lt;strong>Styled Media Receiver&lt;/strong> and &lt;strong>Custom Web Receiver&lt;/strong>.&lt;/p>
+&lt;p>The &lt;strong>Styled Media Receiver&lt;/strong> does everything for us. It hosts the receiver application (an HTML5 app) and provides all the default styles and functionality. If we want to change the styles and/or the logo, we are free to host them on an HTTPS server, and we&amp;rsquo;ll be done.&lt;/p>
+&lt;p>With everything it offers, it has limited still quite adequate media support, including playing video files, audio files, streaming video, and audio, displaying images and opening specific apps on the TV (like YouTube).&lt;/p>
+&lt;p>Our main job is to &amp;ldquo;stream&amp;rdquo; our desktop to the Chromecast device. For this purpose, the &lt;strong>Styled Media Receiver&lt;/strong> supports three streaming protocols:&lt;/p>
+&lt;ul>
+&lt;li>Dynamic Adaptive Streaming over HTTP (DASH)&lt;/li>
+&lt;li>Apple&amp;rsquo;s HTTP Live Streaming (HLS)&lt;/li>
+&lt;li>Microsoft&amp;rsquo;s Smooth streaming&lt;/li>
+&lt;/ul>
+&lt;p>We drop considerations for the Smooth Streaming protocol here because of the lack of feature differences compared to the other widely supported protocols, except that HLS and Smooth Streaming support pre-loading by default.&lt;/p>
+&lt;p>So we end up here with two choices: DASH and HLS. Now, HLS is widely supported; on the other hand, DASH is codec agnostic for both video and audio. In terms of latency, both are said to have similar latencies that depend on the segment duration we decide upon.&lt;/p>
+&lt;p>As per the HLS&amp;rsquo;s RFC (linked below), the &lt;code>EXT-X-TARGETDURATION&lt;/code> tag in the playlist file (or manifest file) accepts a decimal integer value. It dictates how much the maximum duration of each segment can be (rounded off to the nearest integer). It is suspected to be similar to DASH, although its RFC does not clearly mention so. We better find out by actually experimenting and streaming.&lt;/p>
+&lt;p>Reducing the segment size too much can cause the bitrate to bump up and the stream quality to degrade thanks to all the added keyframes for each segment, so we need to test what suits this live stream the best.&lt;/p>
+&lt;hr>
+&lt;p>Next up, we take the discussion to the &lt;strong>Custom Web Receiver&lt;/strong> and the conclusions from some of our tests with the Chromecast streamings using the Command and Control (CaC) Tool, which is a sender app provided by Google for testing and debugging Web Receiver apps.&lt;/p>
+&lt;p>We want to test out and know more about other protocols not supported out of the box in Chromecast but can work fine with a Custom Web Receiver: SRT, RTSP and WebRTC.&lt;/p>
+&lt;p>Thanks to Benjamin and Claudio for all the help!&lt;/p>
+&lt;hr>
+&lt;p>Relevant Links:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/" target="_blank" rel="noopener"
+>Chromecast Docs&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/styled_receiver" target="_blank" rel="noopener"
+>Styled Media Receiver&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/web_receiver/streaming_protocols" target="_blank" rel="noopener"
+>Streaming Protocols Supported by Web Receiver&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.toolbox.com/tech/programming/guest-article/mpeg-dash-vs-hls-which-one-should-you-use/" target="_blank" rel="noopener"
+>DASH vs HLS by Toolbox&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.dacast.com/blog/video-streaming-protocol/" target="_blank" rel="noopener"
+>Common Video Streaming Protocols&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://bitmovin.com/mpeg-dash-hls-segment-length/" target="_blank" rel="noopener"
+>Blog on Segment Length in DASH and HLS&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://streaminglearningcenter.com/learning/choosing-the-optimal-segment-duration.html" target="_blank" rel="noopener"
+>Blog on Segment Duration in DASH and HLS&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://datatracker.ietf.org/doc/html/rfc8216#section-4.3.3.1" target="_blank" rel="noopener"
+>HLS RFC: EXT-X-TARGETDURATION tag&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://datatracker.ietf.org/doc/html/rfc7933" target="_blank" rel="noopener"
+>DASH RFC&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/debugging/cac_tool" target="_blank" rel="noopener"
+>CaC Tool&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p> &lt;/p></description></item><item><title>Playing Around with Kubernetes in EC2</title><link>https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/</link><pubDate>Tue, 06 Jul 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/playing-around-with-kubernetes-in-ec2/</guid><description>&lt;p> &lt;/p>
+&lt;h3 id="the-minikube-cluster">The Minikube Cluster&lt;/h3>
+&lt;p>It is a local playground to learn or test your code as it would run on a full-fledged Kubernetes Cluster. It creates a small cluster consisting of only one node.&lt;br>
+The command &lt;code>minikube start&lt;/code> launches the cluster with options for bare-metal, ssh, docker among others. The cluster can be managed with CLI but it also offers a GUI in the web browser, can be launched with &lt;code>minikube dashboard&lt;/code> command.&lt;br>
+The task of minikube is over here. Now we head on to using the &lt;code>kubectl&lt;/code> command to manage the cluster.&lt;/p>
+&lt;h3 id="manage-the-cluster">Manage the Cluster&lt;/h3>
+&lt;p>Information gathering can be done easily using the command &lt;code>kubectl get&lt;/code> followed by &lt;code>pods&lt;/code>, &lt;code>services&lt;/code>, &lt;code>deployments&lt;/code>, &lt;code>replicaset&lt;/code>, etc. A deployment can be easily created (using docker here) by running&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">$ kubectl create deployment &amp;lt;name&amp;gt; --image&lt;span class="o">=&lt;/span>&amp;lt;docker-image-name&amp;gt;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">deployment.apps/&amp;lt;name&amp;gt; created
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now we can view the pods created using command:&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ kubectl get pods
+NAME READY STATUS RESTARTS AGE
+&amp;lt;name&amp;gt;-&amp;lt;random-string&amp;gt; 1/1 Running 0 5s
+&lt;/code>&lt;/pre>&lt;p>There is only one pod and only one replicaset (&lt;code>kubectl get replicasets&lt;/code>), because that is the default value, can be changed with &lt;code>--replicas&lt;/code> flag, just like&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">$ kubectl create deployment &amp;lt;name&amp;gt; --image&lt;span class="o">=&lt;/span>&amp;lt;docker-image-name&amp;gt; --replicas&lt;span class="o">=&lt;/span>&lt;span class="m">3&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
+&lt;p>Doing things this way would be slightly cumbersome when there were many different pods with different configurations, moreover they are hard to track, hence I will be using an easier way to deploy the cluster - using YAML configuration files.&lt;/p>
+&lt;p>The following config from &lt;a class="link" href="https://www.youtube.com/watch?v=qmDzcu5uY1I" target="_blank" rel="noopener"
+>this YouTube video&lt;/a> creates a &lt;code>nginx&lt;/code> cluster with 3 replicas and exposes the &lt;code>port 8080&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-yml" data-lang="yml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">apps/v1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Deployment&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx-depl&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">labels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">replicas&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">3&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">selector&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">matchLabels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">template&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">labels&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">app&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">containers&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx:1.16&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">ports&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">containerPort&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="m">8080&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>And it can be deployed using &lt;code>kubectl apply -f filename.yml&lt;/code>&lt;/p>
+&lt;p>Above was an example where three replicas were created with one pod each with one container each, we can also create one pod with two containers which have totally different docker images. This YAML configuration from &lt;a class="link" href="https://collabnix.github.io/kubelabs/pods101/deploy-your-first-nginx-pod.html" target="_blank" rel="noopener"
+>this helpful website&lt;/a> below does exactly that.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-yml" data-lang="yml">&lt;span class="line">&lt;span class="cl">&lt;span class="nt">apiVersion&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">v1&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">kind&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">Pod&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">metadata&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx-pod&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w">&lt;/span>&lt;span class="nt">spec&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumes&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">html&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">emptyDir&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>{}&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">containers&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">first&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">nginx&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumeMounts&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">html&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mountPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/usr/share/nginx/html&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">second&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">image&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">debian&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">volumeMounts&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="nt">name&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">html&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">mountPath&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="l">/html&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">command&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;/bin/sh&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="w"> &lt;/span>&lt;span class="s2">&amp;#34;-c&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="nt">args&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>- &lt;span class="l">while true; do&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="l">date &amp;gt;&amp;gt; /html/index.html;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="l">sleep 1;&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="w"> &lt;/span>&lt;span class="l">done&lt;/span>&lt;span class="w">
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>It is a pod configuration that attaches a common volume to both the containers named &lt;code>html&lt;/code>, which is an empty directory. Then it defines the configuration for the two containers named &lt;code>first&lt;/code> and &lt;code>second&lt;/code> with docker images &lt;code>nginx&lt;/code> and &lt;code>docker&lt;/code> respectively. In the &lt;code>first&lt;/code> container, the &lt;code>html&lt;/code> volume is mounted at &lt;code>/usr/share/nginx/html&lt;/code> so that nginx would serve content from there, and the &lt;code>second&lt;/code> container is just a linux destribution that mounts the &lt;code>html&lt;/code> volume at location &lt;code>/html&lt;/code> in its file structure and executes the command &lt;code>/bin/sh -c&lt;/code> with these arguments&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="k">while&lt;/span> true&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> date &amp;gt;&amp;gt; /html/index.html&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> sleep 1&lt;span class="p">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">done&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This piece of code just appends the &lt;code>/html/index.html&lt;/code> file and sets it content to be the present datetime.&lt;br>
+Long story short debian writes data to the &lt;code>index.html&lt;/code> file which is inside the &lt;code>html&lt;/code> volume, every second, and nginx reads from the same volume&lt;/p>
+&lt;p>One can create the pod using the YAML file with the following command:&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ kubectl create -f nginx-pod.yml
+pod/nginx-pod created
+&lt;/code>&lt;/pre>&lt;p>The pod can be viewed using&lt;/p>
+&lt;pre tabindex="0">&lt;code>$ kubectl get pods
+NAME READY STATUS RESTARTS AGE
+nginx-pod 2/2 Running 0 6s
+&lt;/code>&lt;/pre>&lt;p>Now the index.html file can be viewed by running &lt;code>cat&lt;/code> command inside the container&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">$ kubectl &lt;span class="nb">exec&lt;/span> nginx-pod -c first -- /bin/cat /usr/share/nginx/html/index.html &lt;span class="c1"># for the first container&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:36 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:37 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:38 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:39 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">$ kubectl &lt;span class="nb">exec&lt;/span> nginx-pod -c second -- /bin/cat /html/index.html &lt;span class="c1"># for the second container&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:36 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:37 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:38 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:39 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:40 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:41 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:42 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:43 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:44 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:45 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:46 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:47 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Thu Jul &lt;span class="m">7&lt;/span> 10:41:48 UTC &lt;span class="m">2021&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>kubectl describe po&lt;/code> command can be used to get detailed information about the pods running in the cluster.&lt;/p>
+&lt;p> &lt;/p></description></item><item><title>AWS Console and CLI Exploration</title><link>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</link><pubDate>Tue, 29 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/aws-console-and-cli-exploration/</guid><description>&lt;p> &lt;/p>
+&lt;h2 id="inside-the-aws-console">Inside the AWS Console:&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>Explored compute machine options&lt;/p>
+&lt;ul>
+&lt;li>EC2 is the easiest of all, provides vanilla virtual machine experience for fully self-managing the infrastructure&lt;/li>
+&lt;li>Lambda is for small fuctions or API calls&lt;/li>
+&lt;li>App Runner provides a full-managed infrastructure to run our app handling all the scaling, load balancing, installation of software and deployment.&lt;/li>
+&lt;li>Elastic Beanstalk is a similar service to App Runner, but there is a slight difference, Elastic Beanstalk provides more control over infrastructure after deployment, whereas App Runner manages it fully even after deployment. &lt;a class="link" href="https://acloudguru.com/blog/engineering/what-you-need-to-know-about-aws-app-runner" target="_blank" rel="noopener"
+>(source)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Explored storage options&lt;/p>
+&lt;ul>
+&lt;li>S3, Simple Storage Service, used for every purpose like storing files and also hosting static websites&lt;/li>
+&lt;li>EFS, Elastic File System, used to store files that can be attached to multiple EC2 instances, are fully-managed and scale automatically&lt;/li>
+&lt;li>FSx is used for Windows Servers and playing nice with its ecosystem&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>VPC&lt;/p>
+&lt;ul>
+&lt;li>Used to create a private space in cloud for related, non-public services to live in&lt;/li>
+&lt;li>One or more services can be exposed to the internet and other VPCs or AWS services, while secure services like databases can be secured and only accessed by some hidden service inside the VPC making it more secure&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="creating-two-ec2-instances-inside-a-vpc-and-one-s3-bucket-using-aws-cli-and-then-clearing-off-all-the-resources-vpc-deleted-through-console-because-of-security-group-being-of-type-default-was-not-being-deleted-through-cli-for-some-convoluted-reason">Creating two EC2 instances inside a VPC and one S3 bucket using AWS CLI and then clearing off all the resources (VPC deleted through Console because of security group being of type &amp;lsquo;default&amp;rsquo; was not being deleted through CLI for some convoluted reason&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/aws-basics/aws-basics.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p>
+&lt;p> &lt;/p></description></item><item><title>Installing Terraform and Creating an EC2 Instance</title><link>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</link><pubDate>Sun, 27 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/installing-terraform-and-creating-an-ec2-instance/</guid><description>&lt;p> &lt;/p>
+&lt;h2 id="ensure-the-prerequisites">Ensure the prerequisites&lt;/h2>
+&lt;ul>
+&lt;li>An AWS Account&lt;/li>
+&lt;li>AWS cli installed, instructions for the same can be found &lt;a class="link" href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/li>
+&lt;li>Have generated credentials (access key and secret), can be created from &lt;a class="link" href="https://console.aws.amazon.com/iam/home?#/security_credentials" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;h2 id="setting-up-aws-cli">Setting up AWS CLI&lt;/h2>
+&lt;p>Type &lt;code>aws configure&lt;/code> on the terminal and enter the Access Key ID and Secret Access Key, other fields can be blank.&lt;/p>
+&lt;h2 id="creating-a-config-file-for-terraform-to-understand">Creating a config file for terraform to understand&lt;/h2>
+&lt;ul>
+&lt;li>Create a directory and switch to it&lt;/li>
+&lt;li>Create a file named main.tf and populate it with the following sample configuration,
+where
+&lt;ul>
+&lt;li>&lt;code>app_server&lt;/code> is the name of the instance&lt;/li>
+&lt;li>&lt;code>us-west-2&lt;/code> is the region where the instance will be deployed&lt;/li>
+&lt;li>&lt;code>ami-830c94e3&lt;/code> is the unique identifier for the instance&lt;/li>
+&lt;li>&lt;code>t2.micro&lt;/code> is the instance type&lt;/li>
+&lt;li>&lt;code>ExampleAppServerInstance&lt;/code> is the tag name for grouping of instances&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-tf" data-lang="tf">&lt;span class="line">&lt;span class="cl">&lt;span class="nx">terraform&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nx">required_providers&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">aws&lt;/span> = &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">source&lt;/span> = &lt;span class="s2">&amp;#34;hashicorp/aws&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">version&lt;/span> = &lt;span class="s2">&amp;#34;~&amp;gt; 3.27&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">required_version&lt;/span> = &lt;span class="s2">&amp;#34;&amp;gt;= 0.14.9&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">provider&lt;/span> &lt;span class="s2">&amp;#34;aws&amp;#34;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">profile&lt;/span> = &lt;span class="s2">&amp;#34;default&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">region&lt;/span> = &lt;span class="s2">&amp;#34;us-west-2&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="kr">resource&lt;/span> &lt;span class="s2">&amp;#34;aws_instance&amp;#34;&lt;/span> &lt;span class="s2">&amp;#34;app_server&amp;#34;&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">ami&lt;/span> = &lt;span class="s2">&amp;#34;ami-830c94e3&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">instance_type&lt;/span> = &lt;span class="s2">&amp;#34;t2.micro&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">tags&lt;/span> = &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">Name&lt;/span> = &lt;span class="s2">&amp;#34;ExampleAppServerInstance&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="installation-of-and-working-with-terraform-cli">Installation of and Working with Terraform CLI:&lt;/h2>
+&lt;ul>
+&lt;li>Terraform can be installed following &lt;a class="link" href="https://learn.hashicorp.com/tutorials/terraform/install-cli" target="_blank" rel="noopener"
+>this guide&lt;/a>&lt;/li>
+&lt;li>Configuration of terraform CLI can be done using command &lt;code>terraform init&lt;/code>&lt;/li>
+&lt;li>The configuration file can be formatted using &lt;code>terraform fmt&lt;/code> command&lt;/li>
+&lt;li>And the file can be validated using &lt;code>terraform validate&lt;/code> command&lt;/li>
+&lt;li>Finally all the changes can be viewed using &lt;code>terraform plan&lt;/code> command and perfomed using &lt;code>terraform apply&lt;/code> command&lt;/li>
+&lt;/ul>
+&lt;h2 id="here-is-a-terminal-cast-performing-the-above-actions">Here is a terminal cast performing the above actions&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/terraform/terraform-1.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Hosting Docker in Cloud (Azure)</title><link>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</link><pubDate>Tue, 15 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/hosting-docker-in-cloud-azure/</guid><description>&lt;p> &lt;/p>
+&lt;h2 id="azure-part-of-story">Azure part of story&lt;/h2>
+&lt;ul>
+&lt;li>First create one Azure account, I am using a student account&lt;/li>
+&lt;li>Create a basic instance (Ubuntu image works for most cases) with 1 vCPU and 1 GiB RAM, or according to your needs&lt;/li>
+&lt;li>Download the private key and SSH into the instance&lt;/li>
+&lt;li>Update the packages&lt;/li>
+&lt;li>Install docker (following &lt;a class="link" href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener"
+>this&lt;/a> guide)&lt;/li>
+&lt;/ul>
+&lt;p>Let&amp;rsquo;s move on to the local machine setup&lt;/p>
+&lt;p> &lt;/p>
+&lt;h2 id="local-machine-setup">Local machine setup&lt;/h2>
+&lt;h3 id="ssh-keys-setup">SSH Keys Setup&lt;/h3>
+&lt;ul>
+&lt;li>We need to install docker here as well&lt;/li>
+&lt;li>Add ssh key (downloaded from Azure portal) to OpenSSH Auth agent&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">eval&lt;/span> &lt;span class="s1">&amp;#39;ssh-agent&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ssh-add &amp;lt;path-to-pem-file&amp;gt;/&amp;lt;file-name&amp;gt;.pem
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>&lt;em>(or)&lt;/em> Add &lt;code>AddKeysToAgent yes&lt;/code> to ~/.ssh/config file to automatically do that for you&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;AddKeysToAgent yes&amp;#34;&lt;/span> &amp;gt;&amp;gt; ~/.ssh/config
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p> &lt;/p>
+&lt;h3 id="docker-context-setup">Docker Context Setup&lt;/h3>
+&lt;ul>
+&lt;li>Create a new docker context to talk to the docker in Azure instance with command&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">docker context create azure-box --docker &lt;span class="s2">&amp;#34;host=ssh://azureuser@&amp;lt;public-ip-of-instance&amp;gt;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>See all available contexts using &lt;code>docker context ls&lt;/code>&lt;/li>
+&lt;li>Switching to Azure docker is done using command &lt;code>docker context use azure-box&lt;/code> and back to the local docker using &lt;code>docker context use default&lt;/code>&lt;/li>
+&lt;li>Now when we issue commands to docker as usual &lt;code>docker ps&lt;/code>, it is directly communicating to the docker running in the Azure instance&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Note: &amp;lsquo;azure-box&amp;rsquo; is just a name, can be replaced with anything of your choice&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="-now-you-have-docker-running-in-the-cloud-accessible-from-the-terminal">🎉 Now you have docker running in the cloud, accessible from the terminal&lt;/h2>
+&lt;h3 id="finally-just-for-testing-we-can-spin-up-a-ubuntu-container-and-bash-into-it">Finally just for testing, we can spin up a Ubuntu container and bash into it:&lt;/h3>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/docker-cloud/docker-cloud.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Git Add, Git Commit and Git Push</title><link>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</link><pubDate>Fri, 11 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/git-add-git-commit-and-git-push/</guid><description>&lt;h2 id="how-to-add-and-commit-changes-in-the-and-then-push-the-changes-to-a-remote-repository-here-github">How to add and commit changes in the and then push the changes to a remote repository (here GitHub)&lt;/h2>
+&lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
+&lt;ul>
+&lt;li>Change some files or create some&lt;/li>
+&lt;li>Issue&lt;code>git add &amp;lt;name of files&amp;gt;&lt;/code>command to add files to be committed&lt;/li>
+&lt;li>Then commit them using &lt;code>git commit -am &amp;lt;commit message&amp;gt;&lt;/code>, here a is for all files, m is for message, and then you place your message for the changes&lt;/li>
+&lt;li>(optional) Finally, push the changes to a remote repository&lt;/li>
+&lt;/ul>
+&lt;h2 id="lets-see-this-in-action">Let&amp;rsquo;s see this in action&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/git-basics/git-acp.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item><item><title>Embedding Asciinema in Hugo Websites</title><link>https://kyteinsky.github.io/p/embedding-asciinema-in-hugo-websites/</link><pubDate>Thu, 10 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/embedding-asciinema-in-hugo-websites/</guid><description>&lt;p> &lt;/p>
+&lt;h1 id="following-a-general-approach-for-any-theme-steps-to-be-performed-following-this-articlehttpsjencisogithubioblogembedding-asciinema-cast-in-your-hugo-site">Following a general approach for any theme, steps to be performed (following &lt;a class="link" href="https://jenciso.github.io/blog/embedding-asciinema-cast-in-your-hugo-site/" target="_blank" rel="noopener"
+>this article&lt;/a>):&lt;/h1>
+&lt;p>Specific for the theme Stack: &lt;a class="link" href="#for-the-stack-theme-the-kind-developer-of-the-theme-zhixuan666httpsgithubcomzhixuan666-mentioned-a-more-efficient-way-to-do-it" >Click Here&lt;/a>&lt;/p>
+&lt;ul>
+&lt;li>Get code for asciinema player&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">wget https://github.com/asciinema/asciinema-player/releases/download/v2.6.1/asciinema-player.css
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wget https://github.com/asciinema/asciinema-player/releases/download/v2.6.1/asciinema-player.js
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Place them in static/css and static/js, where static is folder in the root dir of the website&lt;/li>
+&lt;li>Copy the &lt;code>layouts/partials/_shared/head.html&lt;/code> or &lt;code>layouts/partials/head/head.html&lt;/code> from &lt;code>themes/&amp;lt;theme-name&amp;gt;&lt;/code> directory to your website&amp;rsquo;s root directory with the same folder structure&lt;/li>
+&lt;li>Do the same with &lt;code>layouts/_default/baseof.html&lt;/code>&lt;/li>
+&lt;li>Append this code block for css in &lt;code>layouts/partials/{head or _shared}/head.html&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">{{ if .Params.asciinema }}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">link&lt;/span> &lt;span class="na">rel&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;stylesheet&amp;#34;&lt;/span> &lt;span class="na">type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;text/css&amp;#34;&lt;/span> &lt;span class="na">href&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Site.BaseURL }}css/asciinema-player.css&amp;#34;&lt;/span> &lt;span class="p">/&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{{ end }}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>And this for js in &lt;code>layouts/_default/baseof.html&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">{{ if .Params.asciinema }}
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">script&lt;/span> &lt;span class="na">defer&lt;/span> &lt;span class="na">src&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Site.BaseURL }}js/asciinema-player.js&amp;#34;&lt;/span>&lt;span class="p">&amp;gt;&amp;lt;/&lt;/span>&lt;span class="nt">script&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">{{ end }}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Now let&amp;rsquo;s make a shortcode for asciinema here: &lt;code>layouts/shortcodes/asciinema.html&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>One can change the default rows and columns attributes inside &lt;code>&amp;lt;asciinema-player&amp;gt;&lt;/code> tag&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nt">asciinema-player&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">src&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;/casts/{{ with .Get &amp;#34;&lt;/span>&lt;span class="na">key&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">cols&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">cols&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">cols&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">640&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">rows&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">rows&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">rows&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">10&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">autoplay&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">autoplay&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">autoplay&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">preload&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">preload&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">preload&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">loop&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">loop&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">loop&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">start-at&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">start-at&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">start-at&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">0&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="na">speed&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ if .Get &amp;#34;&lt;/span>&lt;span class="na">speed&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">speed&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}{{&lt;/span> &lt;span class="na">else&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">1&lt;/span>&lt;span class="err">{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">idle-time-limit&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">idle-time-limit&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">idle-time-limit&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">poster&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">poster&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">poster&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">font-size&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">font-size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">font-size&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">theme&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">theme&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">theme&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">title&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">title&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">author&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">author&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">author&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">author-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">author-url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">author-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="err">{{&lt;/span> &lt;span class="na">if&lt;/span> &lt;span class="err">.&lt;/span>&lt;span class="na">Get&lt;/span> &lt;span class="err">&amp;#34;&lt;/span>&lt;span class="na">author-img-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&lt;/span>&lt;span class="na">author-img-url&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;{{ .Get &amp;#34;&lt;/span>&lt;span class="na">author-img-url&lt;/span>&lt;span class="err">&amp;#34;&lt;/span> &lt;span class="err">}}&amp;#34;{{&lt;/span> &lt;span class="na">end&lt;/span> &lt;span class="err">}}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">&amp;gt;&amp;lt;/&lt;/span>&lt;span class="nt">asciinema-player&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">&amp;lt;/&lt;/span>&lt;span class="nt">p&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>Finally create a new post and set &lt;code>asciinema = true&lt;/code> in the metadata (for toml)&lt;/li>
+&lt;li>And embed the asciinema cast as follows in the body part&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-html" data-lang="html">&lt;span class="line">&lt;span class="cl">{{&lt;span class="p">&amp;lt;&lt;/span> &lt;span class="nt">asciinema&lt;/span> &lt;span class="na">key&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;demo-folder/demo-cast.cast&amp;#34;&lt;/span> &lt;span class="na">rows&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;35&amp;#34;&lt;/span> &lt;span class="na">preload&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;1&amp;#34;&lt;/span> &lt;span class="p">&amp;gt;&lt;/span>}}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;ul>
+&lt;li>And don&amp;rsquo;t forget to put your .cast file in &lt;code>static/casts/demo-folder/democast.cast&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="first-attempt-at-the-task">First attempt at the task&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/embedding-asciinema-casts/embedding-asciinema-casts.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p>
+&lt;h2 id="correcting-the-mistakes-done-above">Correcting the mistakes done above&lt;/h2>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/embedding-asciinema-casts/final.cast"
+cols="640"
+rows="35"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p>
+&lt;p> &lt;/p>
+&lt;h1 id="for-the-stack-theme-the-kind-developer-of-the-theme-zhixuan666httpsgithubcomzhixuan666-mentioned-a-more-efficient-way-to-do-it">For the Stack theme, the kind developer of the theme &lt;a class="link" href="https://github.com/zhixuan666" target="_blank" rel="noopener"
+>@zhixuan666&lt;/a> mentioned a more efficient way to do it.&lt;/h1>
+&lt;p>Here is his reply to the GitHub issue: &lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack/issues/221#issuecomment-859537347" target="_blank" rel="noopener"
+>link&lt;/a>&lt;/p>
+&lt;p> &lt;/p></description></item><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
+&lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
+&lt;ul>
+&lt;li>Create an empty hugo site with boilerplate code&lt;/li>
+&lt;li>Initialize the site as a git repository&lt;/li>
+&lt;li>Add the theme as a submodule to receive updates automatically, can be just cloned in place or downloaded and extracted at the right place manually&lt;/li>
+&lt;li>Copy some example site&amp;rsquo;s posts and config file to the root folder of the website to edit them without disturbing the original theme files (these files override the respective default ones)&lt;/li>
+&lt;li>Edit the config.yaml file as per requirements, and delete the config.toml file that was placed by hugo&lt;/li>
+&lt;li>Create a new post with sone markdown text&lt;/li>
+&lt;li>host the site locally&lt;/li>
+&lt;/ul>
+&lt;h4 id="this-might-be-the-right-moment-to-commit-the-changes-as-starting-point-of-the-repository">This might be the right moment to commit the changes as starting point of the repository.&lt;/h4>
+&lt;h3 id="here-is-the-asciinema-terminal-cast">Here is the asciinema terminal cast:&lt;/h3>
+&lt;p>
+&lt;asciinema-player
+src="https://kyteinsky.github.io/casts/new-hugo-site/hugo-setup.cast"
+cols="640"
+rows="40"
+preload="1"
+start-at="0"
+speed="1"
+>&lt;/asciinema-player>
+&lt;/p></description></item></channel></rss>
