@@ -2,19 +2,20 @@ name: gh pages deploy
 
 on:
   push:
-    branches:
-      - deploy
+    branches: [ deploy ]
+  workflow_dispatch:
 
 jobs:
-  compile:
-    uses: ./.github/workflows/gh-pages-compile.yml
-
   deploy:
     runs-on: ubuntu-20.04
     steps:
+      - name: Compile Step
+        uses: ./.github/workflows/gh-pages-compile.yml
+
       - name: Deploy Step
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/deploy'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+
