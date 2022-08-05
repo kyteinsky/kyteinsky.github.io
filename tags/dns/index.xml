@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>dns on kyte codes</title><link>https://kyteinsky.github.io/tags/dns/</link><description>Recent content in dns on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 05 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/dns/index.xml" rel="self" type="application/rss+xml"/><item><title>DNS Based Communication</title><link>https://kyteinsky.github.io/p/dns-based-communication/</link><pubDate>Fri, 05 Aug 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/dns-based-communication/</guid><description>&lt;blockquote>
+&lt;p>This project is about a DNS server that can handle communications (one way).&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="brief">Brief&lt;/h2>
+&lt;p>So what do I mean when I say it can handle communications? It means that you can send messages to a remote server, which happens to be an authoritative DNS server, in plain text as well as encrypted data.&lt;/p>
+&lt;p>The idea mainly stems from a Youtube video (whose link seems to have been lost in the internet haystack).&lt;br>
+The person in the video explains its use case when you have a network with HTTP(S) ports blocked, some special service using some custom port, and the default DNS port 53 unblocked (maybe they forgot, maybe they use it for some reason).&lt;br>
+This is a particular and unlikely situation, but the problem at hand is rather interesting. We need to make a DNS-based one-way message transfer protocol for fun.&lt;/p>
+&lt;h2 id="plan">Plan&lt;/h2>
+&lt;p>The exact action plan would be decided upon further inspection of the DNS protocol, its capabilities and limitations. For now, we won&amp;rsquo;t bother ourselves with the fine details.&lt;/p>
+&lt;p>Without looking into the DNS specifications, here&amp;rsquo;s a crude plan of how things should go:&lt;/p>
+&lt;p>The first step would be to create a DNS server that has access to the DNS query and gets some say in the response (yeah, some libraries can be used for &lt;em>development ease&lt;/em>, and writing a response could be redundant).&lt;br>
+Now that reading and writing are possible, it is time to define the protocol structure in Unga Bunga.&lt;/p>
+&lt;p>Usually, the query we send in a DNS request is a domain name structured in the form &lt;code>abcd.efgh.com&lt;/code>.&lt;br>
+We can use the actual domain name and sub-domain names to act as our payload here (allowed characters are 26 alphabet characters in lowercase, 10 digits, and 1 hyphen)&lt;/p>
+&lt;ul>
+&lt;li>as plain text&lt;/li>
+&lt;li>as encrypted text&lt;/li>
+&lt;/ul>
+&lt;h4 id="plain-text">Plain text&lt;/h4>
+&lt;p>We can use hyphens to replace blank spaces and an encoding method as &lt;code>0-&lt;/code> followed by the word to be capitalized in this manner: &lt;code>hello-0-world&lt;/code>. This would mean &lt;code>hello World&lt;/code>, and as a general rule of thumb, we could just make the first letter capital when such encoding was being used, giving us the sweet output &lt;code>Hello World&lt;/code>.&lt;/p>
+&lt;h4 id="encrypted-text">Encrypted text&lt;/h4>
+&lt;p>We discuss encoded here too since there is not much difference between them once the plain text has been processed.&lt;br>
+We have limitless power here. Just encrypt the text and use a total of 26+10+1 characters to pass it on, or just use the &lt;em>here&lt;/em> less efficient hex characters directly obtained from the encoder or encryptor.&lt;/p>
+&lt;hr>
+&lt;p>But wait, the length of the domain is limited! How do we send a longer message?&lt;br>
+Here comes the &lt;code>com&lt;/code> part of the domain into the picture. It can specify if we have more content waiting to be sent or if we are finished.&lt;br>
+Let us, for now, reserve the first character to check if we have more input to read: &lt;code>0&lt;/code> for not finished yet and &lt;code>1&lt;/code> for done.&lt;br>
+And the following four characters for the sequence number. This shall start at &lt;code>1&lt;/code> for the first partial message and go on increasing for the following messages. This ensures we assemble the whole message in the correct order in case they are not received in the same order as sent.&lt;/p>
+&lt;p>For the response part, we can follow in TCP&amp;rsquo;s footsteps. We respond to all the queries with the sequence numbers of the received messages following &lt;code>base 256&lt;/code> (to say). For sequence number &lt;code>122&lt;/code>, we return IPv4 &lt;code>0.0.0.122&lt;/code>, and for sequence number &lt;code>257&lt;/code>, we return IPv4 &lt;code>0.0.2.0&lt;/code>.&lt;/p>
+&lt;p>This should be enough planning for now, I guess.&lt;/p>
+&lt;p>I haven&amp;rsquo;t used Go before in any project and want to learn it.&lt;br>
+What better opportunity than this right here? Let&amp;rsquo;s Go!&lt;/p></description></item></channel></rss>
