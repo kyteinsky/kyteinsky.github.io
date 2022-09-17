@@ -1,4 +1,177 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>gsoc on kyte codes</title><link>https://kyteinsky.github.io/tags/gsoc/</link><description>Recent content in gsoc on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/gsoc/index.xml" rel="self" type="application/rss+xml"/><item><title>Chromecast Protocol</title><link>https://kyteinsky.github.io/p/chromecast-protocol/</link><pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-protocol/</guid><description>&lt;p> &lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>gsoc on kyte codes</title><link>https://kyteinsky.github.io/tags/gsoc/</link><description>Recent content in gsoc on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Fri, 16 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/gsoc/index.xml" rel="self" type="application/rss+xml"/><item><title>GSoC Finale</title><link>https://kyteinsky.github.io/p/gsoc-finale/</link><pubDate>Fri, 16 Sep 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gsoc-finale/</guid><description>&lt;p>It definitely was a long journey. Although I didn&amp;rsquo;t write enough blogs to outline the exact shaping of it, here&amp;rsquo;s a final report on what has been going on.&lt;/p>
+&lt;p>The workings of the protocol and the connection specifics have already been discussed before, so let&amp;rsquo;s keep this short.&lt;/p>
+&lt;ul>
+&lt;li>Discovery using mDNS&lt;/li>
+&lt;li>Connection over TCP&lt;/li>
+&lt;li>Messages are structured in JSON and encoded using protobuf&lt;/li>
+&lt;li>All the messages have at least a &lt;code>sender id&lt;/code>, &lt;code>destination id&lt;/code>, &lt;code>namespace&lt;/code>, &lt;code>payload type&lt;/code>, and the &lt;code>payload&lt;/code> itself&lt;/li>
+&lt;/ul>
+&lt;p>Last time we connected to the Chromecast device, we opened a media receiver web app and played a video on it.&lt;br>
+Our goal, as it remains, is to cast our desktop/window on the Chromecast display. We can choose from three different streaming protocols to have what we want: DASH, HLS, and Smooth Streaming.&lt;/p>
+&lt;p>Implementing one of those was the primary goal until a sparse study of Chromium&amp;rsquo;s code unveiled a namespace called &lt;code>urn:x-cast:com.google.cast.webrtc&lt;/code>.&lt;br>
+We also used Google Chrome&amp;rsquo;s (or Chromium&amp;rsquo;s) tab casting feature and recorded the logs. Looking at the logs virtually revealed the entire message exchange and the steps involved, but it was no documentation by any stretch. We had no idea what the possibilities were or the error cases, for that matter.&lt;br>
+While trying to figure out the Chromecast protocol, we noticed many logs in the message exchange files that were not in Chrome&amp;rsquo;s logs, even with the highest level of verbosity. &lt;code>DLOG&lt;/code> and &lt;code>VLOG&lt;/code>, for example, did not print out the &lt;code>DLOG&lt;/code>, where I suspect D stands for development and V for verbose.&lt;br>
+It would have been easier to see what exactly happens with Chrome&amp;rsquo;s logs. We tried using the dev symbols that come with the Linux distribution, but Arch Linux had some issues at the time.&lt;br>
+Nevertheless, I don&amp;rsquo;t suppose that would&amp;rsquo;ve worked for the logs.&lt;/p>
+&lt;p>So the only option left was to read the code and figure it out ourselves. And that&amp;rsquo;s what we did since no one was successful with the webrtc stream before on the internet.&lt;br>
+We came across &lt;a class="link" href="https://source.chromium.org/chromium/chromium/src/&amp;#43;/main:third_party/openscreen/src/cast/" target="_blank" rel="noopener"
+>this directory&lt;/a>. It contained all the knowledge there was. The proto files, the json schemas, the header files with all the constants, all the good stuff we needed. From the names of the files itself we knew how to send the stream to Chromecast, except that we didn&amp;rsquo;t (&lt;em>hint&lt;/em> &lt;em>hint&lt;/em> something to do with encryption).&lt;/p>
+&lt;p>Let me loop back to the negotiation part of the WebRTC stream. In normal WebRTC, there is a separate entity that relays messages between the two parties interested. Here that happens to be the sender itself.&lt;br>
+We open the app called &lt;code>Chrome Mirroring&lt;/code> (app id &lt;code>0F5096E8&lt;/code>). This is for audio and video streaming. There is also one for only audio streaming. You can find a few others &lt;a class="link" href="https://source.chromium.org/chromium/chromium/src/&amp;#43;/main:third_party/openscreen/src/cast/common/public/cast_streaming_app_ids.h" target="_blank" rel="noopener"
+>here&lt;/a>.&lt;br>
+Now, when the app is opened, we get a receiver status message, and we start communicating with the app from this point on by addressing the messages to the session id of the app, after connecting to it first.&lt;/p>
+&lt;p>The first thing we do is send an offer message with the necessary information for the streams we wish to send and the encryption keys, among other details. Here is an example message:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;source_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;sender-990878&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;destination_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;a8a79f97-a63e-4555-baec-53e3f49e6df3&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;namespace&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;urn:x-cast:com.google.cast.webrtc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;payload_utf8&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;offer&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;castMode&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;mirroring&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;receiverGetStatus&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;supportedStreams&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;aesIvMask&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1D20EA1C710E5598ECF80FB26ABC57B0&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;aesKey&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;BB0CAE24F76EA1CAC9A383CFB1CFD54E&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;bitRate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">102000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;channels&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;codecName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;opus&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;receiverRtcpEventLog&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpExtensions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;adaptive_playout_delay&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpPayloadType&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">127&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpProfile&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;cast&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;sampleRate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">48000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ssrc&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">144842&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;targetDelay&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">400&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;timeBase&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1/48000&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;audio_source&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;aesIvMask&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1D20EA1C710E5598ECF80FB26ABC57B0&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;aesKey&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;BB0CAE24F76EA1CAC9A383CFB1CFD54E&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;codecName&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;vp8&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;index&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;maxBitRate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">5000000&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;maxFrameRate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;30000/1000&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;receiverRtcpEventLog&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;renderMode&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;video&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;resolutions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[{&lt;/span> &lt;span class="nt">&amp;#34;height&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1080&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nt">&amp;#34;width&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">1920&lt;/span> &lt;span class="p">}],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpExtensions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;adaptive_playout_delay&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpPayloadType&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">96&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpProfile&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;cast&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ssrc&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">545579&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;targetDelay&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">400&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;timeBase&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;1/90000&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;video_source&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;seqNum&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">730137397&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;OFFER&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;blockquote>
+&lt;p>Note: only the &lt;code>payload_utf8&lt;/code> is structured in JSON, other sibling keys are part of protobuf.&lt;/p>
+&lt;/blockquote>
+&lt;p>You see that? All the details are right there in the offer message.&lt;br>
+Other codecs are also supported, such as h264, vp9, hevc, and aac.&lt;br>
+Although most of the things should be self-explanatory, focus on the key &lt;code>ssrc&lt;/code> in both the audio and video streams. This is the identifier for the stream.&lt;br>
+The AES keys and masks are passed down in the offer message still. The algorithm used however is &lt;a class="link" href="https://source.chromium.org/chromium/chromium/src/&amp;#43;/main:third_party/openscreen/src/cast/streaming/frame_crypto.cc;l=102" target="_blank" rel="noopener"
+>AES-CTR-128&lt;/a>.&lt;/p>
+&lt;p>We sent an offer. We must receive an answer to it.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;source_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;a8a79f97-a63e-4555-baec-53e3f49e6df3&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;destination_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;sender-990878&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;namespace&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;urn:x-cast:com.google.cast.webrtc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;payload_utf8&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;answer&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;castMode&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;mirroring&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;receiverGetStatus&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;receiverRtcpEventLog&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rtpExtensions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[[],&lt;/span> &lt;span class="p">[]],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;sendIndexes&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ssrcs&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mi">144843&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">545580&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;udpPort&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">51810&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;result&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ok&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;seqNum&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">730137397&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ANSWER&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>You&amp;rsquo;d find it weird that the ssrc values have been incremented compared to what we sent. Apart from that, the keys that deserve our attention are &lt;code>updPort&lt;/code>, &lt;code>result&lt;/code>, and &lt;code>type&lt;/code>. If the result is &amp;ldquo;ok&amp;rdquo;, we collect the port number and start streaming RTP packets and exchanging RTCP packets. For streaming RTP packets, we &lt;strong>need&lt;/strong> a controller of the packets, either RTCP or RTSP. Found this out the hard way while messing around with the GStreamer launch command.&lt;/p>
+&lt;p>After these findings, we had some time left to reorganise the code and handle the edge cases well.&lt;br>
+Daily routine was to read docs, write code, test, check logs, and repeat.&lt;/p>
+&lt;p>Now we had what you can call state management (just a variable and if checks) and some nice JSON string generators.&lt;br>
+We jumped into media handling right on. Already having a pipeline to process video and audio in GNOME Network Displays made things easy, but tinkering with it was no easy job until &lt;a class="link" href="https://gstreamer.freedesktop.org/documentation/tutorials/basic/index.html?gi-language=c" target="_blank" rel="noopener"
+>the saviour&lt;/a> lent a helping hand. The first few tutorials were all that was needed to get to speed.&lt;/p>
+&lt;p>The pipeline created for video (only) streaming looked like what follows:&lt;/p>
+&lt;p>&lt;figure style="flex-grow: 1584; flex-basis: 3803px">
+&lt;a href="https://kyteinsky.github.io/p/gsoc-finale/pipeline.png" data-size="8763x553">&lt;img src="https://kyteinsky.github.io/p/gsoc-finale//p/gsoc-finale/pipeline.png"
+srcset="https://kyteinsky.github.io/p/gsoc-finale/pipeline_hucb4e2b506f4294e55aca3bcb216d10a7_168220_480x0_resize_box_3.png 480w, https://kyteinsky.github.io/p/gsoc-finale/pipeline_hucb4e2b506f4294e55aca3bcb216d10a7_168220_1024x0_resize_box_3.png 1024w"
+width="8763"
+height="553"
+loading="lazy"
+alt="Video Pipeline">
+&lt;/a>
+&lt;figcaption>Video Pipeline&lt;/figcaption>
+&lt;/figure>&lt;/p>
+&lt;p>You might want to zoom in a little.&lt;/p>
+&lt;p>This was an unencrypted RTP stream with unencrypted RTCP messages. The only thing to add was an encryption layer over the RTP packets. The plugin &lt;code>srtpenc&lt;/code> provided by GStreamer did precisely this, except that it did not do AES-CTR, only AES-ICM and AES-GCM. Going deeper, it used the library &lt;code>libsrtp&lt;/code> by Cisco, which, unfortunately, only has implementations for the same two algorithms.&lt;/p>
+&lt;p>There are two ways to go moving forward:&lt;/p>
+&lt;ul>
+&lt;li>Add necessary headers in &lt;code>srtpenc&lt;/code> and the AES-CTR implementation in &lt;code>libsrtp&lt;/code> upstream&lt;/li>
+&lt;li>Implement a GStreamer plugin that does what both &lt;code>srtpenc&lt;/code> and &lt;code>libsrtp&lt;/code> do with some help from &lt;code>openssl&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>Despite that, we were enticed to test the unencrypted stream as is. We had the following broadcast message (and a blank Chromecast display to go with it).&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;source_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;b7319b19-5641-472e-91d8-daeff9746a68&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;destination_id&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;*&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;namespace&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;urn:x-cast:com.google.cast.media&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;payload_utf8&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;requestId&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;status&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;currentTime&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;disableStreamGrouping&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;media&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;contentId&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;contentType&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;video/webm&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;metadata&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nt">&amp;#34;metadataType&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nt">&amp;#34;title&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Chrome tab casting&amp;#34;&lt;/span> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;streamType&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;LIVE&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;mediaSessionId&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;playbackRate&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;playerState&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;PLAYING&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;supportedMediaCommands&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;volume&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span> &lt;span class="nt">&amp;#34;level&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">0.059999998658895493&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nt">&amp;#34;muted&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;MEDIA_STATUS&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>What does all of this mean for the end-user? Do you wait patiently for us to code the plugin?&lt;br>
+Of course not.&lt;br>
+Remember that Chromecast also provides three streaming options with the media app, specifically the &lt;code>Deafult Media Receiver&lt;/code> app (app id &lt;code>CC1AD845&lt;/code>). We went with HLS.&lt;/p>
+&lt;p>&lt;figure style="flex-grow: 180; flex-basis: 433px">
+&lt;a href="https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast.jpg" data-size="4382x2426">&lt;img src="https://kyteinsky.github.io/p/gsoc-finale//p/gsoc-finale/hls_stream_chromecast.jpg"
+srcset="https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast_hu6dbc4d2c9ae95701ac10fab6b21db70f_2274972_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast_hu6dbc4d2c9ae95701ac10fab6b21db70f_2274972_1024x0_resize_q75_box.jpg 1024w"
+width="4382"
+height="2426"
+loading="lazy"
+alt="Laptop screen mirrored on Chromecast">
+&lt;/a>
+&lt;figcaption>Laptop screen mirrored on Chromecast&lt;/figcaption>
+&lt;/figure>&lt;/p>
+&lt;p>There is still some time till this lands on &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays/-/merge_requests/171" target="_blank" rel="noopener"
+>the gitlab&lt;/a>. Some cleanup is left.&lt;br>
+And the files (playlist file and the segment files) are served from an nginx server (with CORS header). So that needs to be inside the app as well. Soup is the answer to this one.&lt;/p>
+&lt;p>Now you won&amp;rsquo;t be able to competitive game on this or use it as a second display, but this surely can handle presentations well.&lt;/p>
+&lt;p>Huge thanks to my mentors Benjamin Berg (@bberg) and Claudio Wunder (@cwunder).&lt;br>
+This project was practically impossible to complete without their help.&lt;/p>
+&lt;p>PS: In the offer message, we set &lt;code>castMode&lt;/code> to &lt;code>mirroring&lt;/code>. There is a second option called &lt;code>remoting&lt;/code>. From what we gathered, it is a dynamic mode that does not need the codec declarations beforehand and supports RPC messages for some reason. Our best bet is that this has to do with Chrome Remote Desktop and is of no interest to us.&lt;/p>
+&lt;hr>
+&lt;p>This isn&amp;rsquo;t the finale. This is the beginning.&lt;/p></description></item><item><title>Chromecast Protocol</title><link>https://kyteinsky.github.io/p/chromecast-protocol/</link><pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-protocol/</guid><description>&lt;p> &lt;/p>
 &lt;h3 id="after-almost-a-month-of-reconnaissance-through-the-study-of-chromiums-code-vlcs-code-and-other-peoples-attempts-we-finally-have-figured-out-the-chromecast-protocol-and-it-works-flawlessly-and-reliably">After almost a month of reconnaissance through the study of Chromium&amp;rsquo;s code, VLC&amp;rsquo;s code and other people&amp;rsquo;s attempts, we finally have figured out the Chromecast protocol, and it works flawlessly and reliably!&lt;/h3>
 &lt;p>&lt;figure style="flex-grow: 89; flex-basis: 215px">
 &lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png" data-size="1920x2142">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol//p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png"
