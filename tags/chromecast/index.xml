@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>chromecast on kyte codes</title><link>https://kyteinsky.github.io/tags/chromecast/</link><description>Recent content in chromecast on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/chromecast/index.xml" rel="self" type="application/rss+xml"/><item><title>Chromecast Protocol</title><link>https://kyteinsky.github.io/p/chromecast-protocol/</link><pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-protocol/</guid><description>&lt;p> &lt;/p>
 &lt;h3 id="after-almost-a-month-of-reconnaissance-through-the-study-of-chromiums-code-vlcs-code-and-other-peoples-attempts-we-finally-have-figured-out-the-chromecast-protocol-and-it-works-flawlessly-and-reliably">After almost a month of reconnaissance through the study of Chromium&amp;rsquo;s code, VLC&amp;rsquo;s code and other people&amp;rsquo;s attempts, we finally have figured out the Chromecast protocol, and it works flawlessly and reliably!&lt;/h3>
 &lt;p>&lt;figure style="flex-grow: 89; flex-basis: 215px">
-&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png" data-size="1920x2142">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol//p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png"
+&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png" data-size="1920x2142">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png"
 srcset="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged_hu8ad568b29edf365d4d5613b7d463e28d_3202865_480x0_resize_box_3.png 480w, https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged_hu8ad568b29edf365d4d5613b7d463e28d_3202865_1024x0_resize_box_3.png 1024w"
 width="1920"
 height="2142"
@@ -39,7 +39,7 @@ alt="Big Buck Bunny clip playing on my TV (Chromecast built-in) and the GNOME Ne
 &lt;li>Important point to note here is that an app can keep running even if the VC and the TCP/TLS connections are closed. We need to be explicit about closing the app with a message.&lt;/li>
 &lt;/ul>
 &lt;p>&lt;figure style="flex-grow: 133; flex-basis: 320px">
-&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver.jpg" data-size="4000x3000">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol//p/chromecast-protocol/chromecast-default-media-receiver.jpg"
+&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver.jpg" data-size="4000x3000">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver.jpg"
 srcset="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver_huda1cfadf36e20cc02f7147c71de4f55d_1550964_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver_huda1cfadf36e20cc02f7147c71de4f55d_1550964_1024x0_resize_q75_box.jpg 1024w"
 width="4000"
 height="3000"

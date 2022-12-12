@@ -82,7 +82,7 @@ speed="1"
 >@zhixuan666&lt;/a> mentioned a more efficient way to do it.&lt;/h1>
 &lt;p>Here is his reply to the GitHub issue: &lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack/issues/221#issuecomment-859537347" target="_blank" rel="noopener"
 >link&lt;/a>&lt;/p>
-&lt;p> &lt;/p></description></item><item><title>New Hugo Website</title><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
+&lt;p> &lt;/p></description></item><item><title>New Hugo Website</title><enclosure url="https://kyteinsky.github.io/p/new-hugo-website/hugo-logo-wide.svg" type="image/jpg"/><link>https://kyteinsky.github.io/p/new-hugo-website/</link><pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/new-hugo-website/</guid><description>&lt;h3 id="we-create-a-new-hugo-website-in-terminal-and-install-a-custom-theme-named-stack-and-create-a-sample-page">We create a new Hugo website in terminal and install a custom theme named Stack and create a sample page&lt;/h3>
 &lt;h4 id="outline-of-steps-to-be-performed">Outline of steps to be performed:&lt;/h4>
 &lt;ul>
 &lt;li>Create an empty hugo site with boilerplate code&lt;/li>

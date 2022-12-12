@@ -107,7 +107,7 @@ We jumped into media handling right on. Already having a pipeline to process vid
 >the saviour&lt;/a> lent a helping hand. The first few tutorials were all that was needed to get to speed.&lt;/p>
 &lt;p>The pipeline created for video (only) streaming looked like what follows:&lt;/p>
 &lt;p>&lt;figure style="flex-grow: 1584; flex-basis: 3803px">
-&lt;a href="https://kyteinsky.github.io/p/gsoc-finale/pipeline.png" data-size="8763x553">&lt;img src="https://kyteinsky.github.io/p/gsoc-finale//p/gsoc-finale/pipeline.png"
+&lt;a href="https://kyteinsky.github.io/p/gsoc-finale/pipeline.png" data-size="8763x553">&lt;img src="https://kyteinsky.github.io/p/gsoc-finale/pipeline.png"
 srcset="https://kyteinsky.github.io/p/gsoc-finale/pipeline_hucb4e2b506f4294e55aca3bcb216d10a7_168220_480x0_resize_box_3.png 480w, https://kyteinsky.github.io/p/gsoc-finale/pipeline_hucb4e2b506f4294e55aca3bcb216d10a7_168220_1024x0_resize_box_3.png 1024w"
 width="8763"
 height="553"
@@ -154,7 +154,7 @@ alt="Video Pipeline">
 Of course not.&lt;br>
 Remember that Chromecast also provides three streaming options with the media app, specifically the &lt;code>Deafult Media Receiver&lt;/code> app (app id &lt;code>CC1AD845&lt;/code>). We went with HLS.&lt;/p>
 &lt;p>&lt;figure style="flex-grow: 180; flex-basis: 433px">
-&lt;a href="https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast.jpg" data-size="4382x2426">&lt;img src="https://kyteinsky.github.io/p/gsoc-finale//p/gsoc-finale/hls_stream_chromecast.jpg"
+&lt;a href="https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast.jpg" data-size="4382x2426">&lt;img src="https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast.jpg"
 srcset="https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast_hu6dbc4d2c9ae95701ac10fab6b21db70f_2274972_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/gsoc-finale/hls_stream_chromecast_hu6dbc4d2c9ae95701ac10fab6b21db70f_2274972_1024x0_resize_q75_box.jpg 1024w"
 width="4382"
 height="2426"
@@ -174,7 +174,7 @@ This project was practically impossible to complete without their help.&lt;/p>
 &lt;p>This isn&amp;rsquo;t the finale. This is the beginning.&lt;/p></description></item><item><title>Chromecast Protocol</title><link>https://kyteinsky.github.io/p/chromecast-protocol/</link><pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-protocol/</guid><description>&lt;p> &lt;/p>
 &lt;h3 id="after-almost-a-month-of-reconnaissance-through-the-study-of-chromiums-code-vlcs-code-and-other-peoples-attempts-we-finally-have-figured-out-the-chromecast-protocol-and-it-works-flawlessly-and-reliably">After almost a month of reconnaissance through the study of Chromium&amp;rsquo;s code, VLC&amp;rsquo;s code and other people&amp;rsquo;s attempts, we finally have figured out the Chromecast protocol, and it works flawlessly and reliably!&lt;/h3>
 &lt;p>&lt;figure style="flex-grow: 89; flex-basis: 215px">
-&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png" data-size="1920x2142">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol//p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png"
+&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png" data-size="1920x2142">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged.png"
 srcset="https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged_hu8ad568b29edf365d4d5613b7d463e28d_3202865_480x0_resize_box_3.png 480w, https://kyteinsky.github.io/p/chromecast-protocol/big-buck-bunny-tv-pc-merged_hu8ad568b29edf365d4d5613b7d463e28d_3202865_1024x0_resize_box_3.png 1024w"
 width="1920"
 height="2142"
@@ -212,7 +212,7 @@ alt="Big Buck Bunny clip playing on my TV (Chromecast built-in) and the GNOME Ne
 &lt;li>Important point to note here is that an app can keep running even if the VC and the TCP/TLS connections are closed. We need to be explicit about closing the app with a message.&lt;/li>
 &lt;/ul>
 &lt;p>&lt;figure style="flex-grow: 133; flex-basis: 320px">
-&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver.jpg" data-size="4000x3000">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol//p/chromecast-protocol/chromecast-default-media-receiver.jpg"
+&lt;a href="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver.jpg" data-size="4000x3000">&lt;img src="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver.jpg"
 srcset="https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver_huda1cfadf36e20cc02f7147c71de4f55d_1550964_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/chromecast-protocol/chromecast-default-media-receiver_huda1cfadf36e20cc02f7147c71de4f55d_1550964_1024x0_resize_q75_box.jpg 1024w"
 width="4000"
 height="3000"
@@ -641,7 +641,7 @@ This project couldn&amp;rsquo;t possibly be done without their consistent suppor
 * &lt;a class="link" href="https://developers.google.com/cast/docs/reference/web_receiver" target="_blank" rel="noopener"
 >Chromecast Web Receiver Docs&lt;/a>&lt;br>
 * &lt;a class="link" href="https://developers.google.com/cast/docs/reference/web_sender" target="_blank" rel="noopener"
->Chromecast Web Sender Docs&lt;/a>&lt;/p></description></item><item><title>Chromecast Connect</title><link>https://kyteinsky.github.io/p/chromecast-connect/</link><pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-connect/</guid><description>&lt;p>It has been a while studying and working with the Chromecast Protocol. This protocol is proprietary, and officially only the Chrome browser, Android, and iOS platforms support casting to a Chromecast-enabled device.&lt;br>
+>Chromecast Web Sender Docs&lt;/a>&lt;/p></description></item><item><title>Chromecast Connect</title><enclosure url="https://kyteinsky.github.io/p/chromecast-connect/google-cast-logo.jpg" type="image/jpg"/><link>https://kyteinsky.github.io/p/chromecast-connect/</link><pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/chromecast-connect/</guid><description>&lt;p>It has been a while studying and working with the Chromecast Protocol. This protocol is proprietary, and officially only the Chrome browser, Android, and iOS platforms support casting to a Chromecast-enabled device.&lt;br>
 Now, Chromium is open source, and so is Android, but we would not want anything to do with Android for obvious reasons, not to mention this feature may be tucked away in Google Play Services.&lt;br>
 So we settle with Chromium which is written in C++. Thankfully almost all of the hard work was done by many other open source projects, notably Node CastV2. Not only this project provides a simple implementation for the Chromecast protocol but also a written explanation of the underlying stuff and how things actually work.&lt;br>
 All I need to figure out is how to implement that is C.&lt;/p>
@@ -739,7 +739,7 @@ I tried to sever all ties and make them all over again, shut it down and revived
 &lt;li>&lt;a class="link" href="https://developers.google.com/cast/docs/reference/web_receiver/cast.framework.messages" target="_blank" rel="noopener"
 >Cast Framework Messages&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p> &lt;/p></description></item><item><title>GNOME Introductory Post</title><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
+&lt;p> &lt;/p></description></item><item><title>GNOME Introductory Post</title><enclosure url="https://kyteinsky.github.io/p/gnome-introductory-post/GNOME-logo-500x316.png" type="image/jpg"/><link>https://kyteinsky.github.io/p/gnome-introductory-post/</link><pubDate>Sun, 12 Jun 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-introductory-post/</guid><description>&lt;p>I will be working as a Google Summer of Code Intern at GNOME Foundation, and my project will be to add Chromecast support to the already very cool &lt;a class="link" href="https://gitlab.gnome.org/GNOME/gnome-network-displays" target="_blank" rel="noopener"
 >GNOME Network Displays app&lt;/a> that has Miracast support as of now. It can be installed through &lt;a class="link" href="https://flathub.org/apps/details/org.gnome.NetworkDisplays" target="_blank" rel="noopener"
 >flatpak&lt;/a> as well.&lt;/p>
 &lt;h3 id="details">Details&lt;/h3>
