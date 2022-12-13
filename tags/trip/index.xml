@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>trip on kyte codes</title><link>https://kyteinsky.github.io/tags/trip/</link><description>Recent content in trip on kyte codes</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Tue, 13 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://kyteinsky.github.io/tags/trip/index.xml" rel="self" type="application/rss+xml"/><item><title>GNOME Asia Feels</title><enclosure url="https://kyteinsky.github.io/p/gnome-asia-feels/2022GNOMEAsia-cover.jpg" type="image/jpg"/><link>https://kyteinsky.github.io/p/gnome-asia-feels/</link><pubDate>Tue, 13 Dec 2022 00:00:00 +0000</pubDate><guid>https://kyteinsky.github.io/p/gnome-asia-feels/</guid><description>&lt;p>First and foremost I want to thank GNOME for sponsoring my visit to Kuala Lumpur, Malaysia.&lt;br>
+It was nice meeting the people who have similar interests and also who actually build the GNOME I use and love.&lt;/p>
+&lt;p>All of them absolutely love open source and the work they do. And most of all, they were all excited and happy to showcase their art. Those would be one of the most engaging communications I&amp;rsquo;ve had in quite a while.&lt;/p>
+&lt;p>There were people from Singapore, Malaysia, India, Denmark, Hong Kong, Albania, Italy, and USA. I attended all that talks I could and apologize for the ones I missed owing to sleeping late in the morning due to my body clock. Malaysian time is 2h30m ahead of Indian time.&lt;br>
+Still I enjoyed them a lot and hope that you all enjoyed my presentation as well.&lt;/p>
+&lt;blockquote>
+&lt;p>Speaking of which, some people asked me &amp;ldquo;what was the presentation actually about?&amp;rdquo; Yeah.&lt;br>
+To squash further FAQs and doubts, here is a simple explanation: I made an addition/extension to an already capable and working app. All it does it cast your screen to a bigger screen if it supports Wi-Fi and isn&amp;rsquo;t Apple owned. My addition revolved around Google&amp;rsquo;s Chromecast, while the existing one was Miracast.&lt;br>
+Simply put, remove the HDMI cable and just use Wi-Fi in your next presentation.&lt;/p>
+&lt;/blockquote>
+&lt;p>Here is a pic of me at the conference. Thanks to Jona Azizaj (@jonatoni) for the amazing shot!&lt;br>
+&lt;figure style="flex-grow: 133; flex-basis: 320px">
+&lt;a href="https://kyteinsky.github.io/p/gnome-asia-feels/pic.jpeg" data-size="2048x1536">&lt;img src="https://kyteinsky.github.io/p/gnome-asia-feels/pic.jpeg"
+srcset="https://kyteinsky.github.io/p/gnome-asia-feels/pic_hu798fb2bdcd006031e77732306f994893_291082_480x0_resize_q75_box.jpeg 480w, https://kyteinsky.github.io/p/gnome-asia-feels/pic_hu798fb2bdcd006031e77732306f994893_291082_1024x0_resize_q75_box.jpeg 1024w"
+width="2048"
+height="1536"
+loading="lazy"
+alt="GNOME Asia Presentation">
+&lt;/a>
+&lt;figcaption>GNOME Asia Presentation&lt;/figcaption>
+&lt;/figure>&lt;/p>
+&lt;p>And not forgetting the main purpose of the whole trip.&lt;/p>
+&lt;p>&lt;figure style="flex-grow: 133; flex-basis: 320px">
+&lt;a href="https://kyteinsky.github.io/p/gnome-asia-feels/stickers.jpg" data-size="4624x3468">&lt;img src="https://kyteinsky.github.io/p/gnome-asia-feels/stickers.jpg"
+srcset="https://kyteinsky.github.io/p/gnome-asia-feels/stickers_hu1d754baf2a7a4a0e8ebb7ac348a5902a_7225119_480x0_resize_q75_box.jpg 480w, https://kyteinsky.github.io/p/gnome-asia-feels/stickers_hu1d754baf2a7a4a0e8ebb7ac348a5902a_7225119_1024x0_resize_q75_box.jpg 1024w"
+width="4624"
+height="3468"
+loading="lazy"
+alt="White, Blue and Hearts">
+&lt;/a>
+&lt;figcaption>White, Blue and Hearts&lt;/figcaption>
+&lt;/figure>&lt;/p>
+&lt;p>Lastly I would have to loved to see my mentors Benjamin and Claudio at the summit. I&amp;rsquo;ll probably BBB them sometime later :)&lt;/p></description></item></channel></rss>
