@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+	echo No post name passed
+	exit
+fi
+
+if [ ! -f "content/post/$1/index.md" ]; then
+	mkdir "content/post/$1"
+	touch "content/post/$1/index.md"
+
+	cat << EOL >> "content/post/$1/index.md"
++++
+author = "Anupam Kumar"
+title = ""
+date = "`date +%Y-%d-%m`"
+description = ""
+tags = []
+categories = []
+aliases = []
+image = ""
++++
+
+EOL
+fi
+
+vim "content/post/$1/index.md"
+
